@@ -2,11 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.sclassen</groupId>
   <artifactId>guice-jpa</artifactId>
-  <version>0.1</version>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Google Guice - Unofficial Extensions - JPA</name>
@@ -22,10 +28,15 @@
   </licenses>
 
   <scm>
-    <url>git://github.com/sclassen/guice-jpa.git</url>
-    <connection>scm:git:git://github.com/sclassen/guice-jpa.git</connection>
+    <url>git@github.com:sclassen/guice-jpa.git</url>
+    <connection>scm:git:git@github.com:sclassen/guice-jpa.git</connection>
     <developerConnection>scm:git:git@github.com:sclassen/guice-jpa.git</developerConnection>
   </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/sclassen/guice-jpa/issues</url>
+  </issueManagement>
 
   <developers>
     <developer>
@@ -124,6 +135,20 @@
             <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
             </goals>
           </execution>
         </executions>
