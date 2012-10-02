@@ -6,11 +6,11 @@
 
   <groupId>com.github.sclassen</groupId>
   <artifactId>guice-jpa</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <packaging>jar</packaging>
 
   <name>Google Guice - Unofficial Extensions - JPA</name>
-  <description>Unofficial Guice extension for JPA with support of container managed persistence units and transactions. </description>
+  <description>Unofficial Guice extension for JPA with support of container managed persistence units and transactions.</description>
   <url>https://github.com/sclassen/guice-jpa</url>
 
   <licenses>
