@@ -8,7 +8,7 @@
     <persistence-unit name="testUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
-        <class>ch.sclassen.guice.guicejpa.testframework.TransactionTestEntity</class>
+        <class>com.github.sclassen.guicejpa.testframework.TransactionTestEntity</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
