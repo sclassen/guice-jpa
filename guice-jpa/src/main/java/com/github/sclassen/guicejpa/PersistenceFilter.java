@@ -25,7 +25,25 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-class PersistenceFilter implements Filter {
+/**
+ * Filter for use in container.
+ * The filter will start all persistence services upon container start and span a unit of work
+ * around every request which is filtered.
+ * <p/>
+ * Usage example:
+ * <pre>
+ *  public class MyModule extends ServletModule {
+ *    public void configure() {
+ *      // bind your persitence units here
+ *      
+ *      filter("/*").through(PersistenceFilter.class);
+ *    }
+ *  }
+ * </pre>
+ *
+ * @author Stephan Classen
+ */
+public class PersistenceFilter implements Filter {
 
   // ---- Members
 

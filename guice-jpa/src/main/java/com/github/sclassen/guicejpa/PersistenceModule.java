@@ -181,6 +181,7 @@ public final class PersistenceModule extends AbstractModule {
 
     bind(PersistenceService.class).annotatedWith(AllPersistenceUnits.class).toInstance(puContainer);
     bind(UnitOfWork.class).annotatedWith(AllPersistenceUnits.class).toInstance(puContainer);
+    bind(PersistenceFilter.class).toInstance(new PersistenceFilter(puContainer));
   }
 
   /**
