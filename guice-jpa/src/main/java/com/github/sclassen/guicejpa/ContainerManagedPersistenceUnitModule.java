@@ -124,7 +124,7 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
     if (TransactionType.GLOBAL == transactionType) {
       checkNotNull(utProvider, "the JNDI name of the user transaction must be specified if a "
           + "persistence wants to use global transactions");
-      return new GlobalTxnInterceptor(emProvider, utProvider);
+      return new GlobalTxnInterceptor(emProvider, getAnnotation(), utProvider);
     }
 
     throw new IllegalStateException();

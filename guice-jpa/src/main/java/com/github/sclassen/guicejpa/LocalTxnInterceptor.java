@@ -90,7 +90,7 @@ class LocalTxnInterceptor implements MethodInterceptor {
 
     try {
       final EntityManager em = emProvider.get();
-      final TransactionFacade transactionFacade = TransactionFacade.get(em);
+      final TransactionFacade transactionFacade = getTransactionFacade(em);
 
       return invoke(methodInvocation, transactionFacade);
     } finally {
@@ -98,7 +98,6 @@ class LocalTxnInterceptor implements MethodInterceptor {
         unitOfWork.end();
       }
     }
-
   }
 
   /**
@@ -126,6 +125,20 @@ class LocalTxnInterceptor implements MethodInterceptor {
     }
 
     return false;
+  }
+
+  /**
+   * Returns the transaction facade for the given entity manager.
+   * 
+   * @param em the entity manager.
+   * @return the transaction facade. Never {@code null}.
+   */
+  protected TransactionFacade getTransactionFacade(final EntityManager em) {
+    EntityTransaction txn = em.getTransaction();
+    if (txn.isActive()) {
+      return new InnerTransaction(txn);
+    }
+    return new OuterTransaction(txn);
   }
 
   /**
@@ -221,50 +234,36 @@ class LocalTxnInterceptor implements MethodInterceptor {
   // ---- Inner Classes
 
   /**
-   * Abstract class which hides away the details of inner (nested) and outer transactions.
-   */
-  private abstract static class TransactionFacade {
-    public static TransactionFacade get(EntityManager em) {
-      EntityTransaction txn = em.getTransaction();
-      if (txn.isActive()) {
-        return new InnerTransaction(txn);
-      }
-      return new OuterTransaction(txn);
-    }
-
-    protected final EntityTransaction txn;
-
-    TransactionFacade(EntityTransaction txn) {
-      this.txn = txn;
-    }
-
-    public abstract void begin();
-
-    public abstract void commit();
-
-    public abstract void rollback();
-  }
-
-  /**
    * TransactionFacade representing an inner (nested) transaction.
    * Starting and committing a transaction has no effect.
    * This Facade will set the rollbackOnly flag in case of a roll back.
    */
-  private static class InnerTransaction extends TransactionFacade {
+  private static class InnerTransaction implements TransactionFacade {
+    private final EntityTransaction txn;
+
     InnerTransaction(EntityTransaction txn) {
-      super(txn);
+      this.txn = txn;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void begin() {
       // Do nothing
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void commit() {
       // Do nothing
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void rollback() {
       txn.setRollbackOnly();
@@ -277,16 +276,27 @@ class LocalTxnInterceptor implements MethodInterceptor {
    * If an inner transaction has set the rollbackOnly flag the transaction will be rolled back
    * in any case.
    */
-  private static class OuterTransaction extends TransactionFacade {
+  private static class OuterTransaction implements TransactionFacade {
+    private final EntityTransaction txn;
+
+    /**
+     * {@inheritDoc}
+     */
     OuterTransaction(EntityTransaction txn) {
-      super(txn);
+      this.txn = txn;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void begin() {
       txn.begin();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void commit() {
       if (txn.getRollbackOnly()) {
@@ -296,6 +306,9 @@ class LocalTxnInterceptor implements MethodInterceptor {
       }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void rollback() {
       txn.rollback();
