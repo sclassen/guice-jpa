@@ -52,6 +52,7 @@ public class ManagedLocalTransactionsTest extends TestCase {
 
     //startup persistence
     injector.getInstance(PersistenceService.class).start();
+    injector.getInstance(UnitOfWork.class).begin();
   }
 
   @Override
@@ -69,7 +70,9 @@ public class ManagedLocalTransactionsTest extends TestCase {
     //test that the data has been stored
     Object result = em.createQuery("from JpaTestEntity where text = :text")
         .setParameter("text", UNIQUE_TEXT).getSingleResult();
+
     injector.getInstance(UnitOfWork.class).end();
+    injector.getInstance(UnitOfWork.class).begin();
 
     assertTrue("odd result returned fatal", result instanceof JpaTestEntity);
 
@@ -89,7 +92,9 @@ public class ManagedLocalTransactionsTest extends TestCase {
 
     Object result = em.createQuery("from JpaTestEntity where text = :text")
         .setParameter("text", UNIQUE_TEXT_MERGE).getSingleResult();
+
     injector.getInstance(UnitOfWork.class).end();
+    injector.getInstance(UnitOfWork.class).begin();
 
     assertTrue(result instanceof JpaTestEntity);
 
@@ -103,6 +108,7 @@ public class ManagedLocalTransactionsTest extends TestCase {
     } catch (IOException e) {
       //ignore
       injector.getInstance(UnitOfWork.class).end();
+      injector.getInstance(UnitOfWork.class).begin();
     }
 
     EntityManager em = injector.getInstance(EntityManagerProvider.class).get();
@@ -116,7 +122,9 @@ public class ManagedLocalTransactionsTest extends TestCase {
           .setParameter("text", TRANSIENT_UNIQUE_TEXT).getSingleResult();
       injector.getInstance(UnitOfWork.class).end();
       fail("a result was returned! rollback sure didnt happen!!!");
-    } catch (NoResultException e) {}
+    } catch (NoResultException e) {
+      // ok when no result found
+    }
   }
 
   public void testSimpleTransactionRollbackOnUnchecked() {
@@ -125,6 +133,7 @@ public class ManagedLocalTransactionsTest extends TestCase {
     } catch (RuntimeException re) {
       //ignore
       injector.getInstance(UnitOfWork.class).end();
+      injector.getInstance(UnitOfWork.class).begin();
     }
 
     EntityManager em = injector.getInstance(EntityManagerProvider.class).get();
@@ -136,7 +145,9 @@ public class ManagedLocalTransactionsTest extends TestCase {
           .setParameter("text", TRANSIENT_UNIQUE_TEXT).getSingleResult();
       injector.getInstance(UnitOfWork.class).end();
       fail("a result was returned! rollback sure didnt happen!!!");
-    } catch (NoResultException e) {}
+    } catch (NoResultException e) {
+      // ok when no result found
+    }
   }
 
   public static class TransactionalObject {

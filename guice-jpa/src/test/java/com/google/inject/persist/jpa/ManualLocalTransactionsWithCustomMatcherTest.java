@@ -55,10 +55,12 @@ public class ManualLocalTransactionsWithCustomMatcherTest extends TestCase {
 
     //startup persistence
     injector.getInstance(PersistenceService.class).start();
+    injector.getInstance(UnitOfWork.class).begin();
   }
 
   @Override
   public void tearDown() {
+    injector.getInstance(UnitOfWork.class).end();
     injector.getInstance(PersistenceService.class).stop();
   }
 
@@ -79,6 +81,7 @@ public class ManualLocalTransactionsWithCustomMatcherTest extends TestCase {
     assertTrue("EntityManager appears to have been closed across txns!", em.isOpen());
 
     injector.getInstance(UnitOfWork.class).end();
+    injector.getInstance(UnitOfWork.class).begin();
 
     //try to query them back out
     em = injector.getInstance(EntityManagerProvider.class).get();
@@ -86,7 +89,6 @@ public class ManualLocalTransactionsWithCustomMatcherTest extends TestCase {
         .setParameter("text", UNIQUE_TEXT).getSingleResult());
     assertNotNull(em.createQuery("from JpaTestEntity where text = :text")
         .setParameter("text", UNIQUE_TEXT_2).getSingleResult());
-    em.close();
   }
 
   public static class TransactionalObject {

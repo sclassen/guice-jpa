@@ -54,10 +54,12 @@ public class ManagedLocalTransactionsAcrossRequestTest extends TestCase {
 
     //startup persistence
     injector.getInstance(PersistenceService.class).start();
+    injector.getInstance(UnitOfWork.class).begin();
   }
 
   @Override
   public final void tearDown() {
+    injector.getInstance(UnitOfWork.class).end();
     injector.getInstance(PersistenceService.class).stop();
   }
 
@@ -70,14 +72,14 @@ public class ManagedLocalTransactionsAcrossRequestTest extends TestCase {
     //test that the data has been stored
     Object result = em.createQuery("from JpaTestEntity where text = :text")
         .setParameter("text", UNIQUE_TEXT).getSingleResult();
+
     injector.getInstance(UnitOfWork.class).end();
+    injector.getInstance(UnitOfWork.class).begin();
 
     assertTrue("odd result returned fatal", result instanceof JpaTestEntity);
 
-    assertEquals("queried entity did not match--did automatic txn fail?",
-        UNIQUE_TEXT, ((JpaTestEntity) result).getText());
-    injector.getInstance(UnitOfWork.class).end();
-
+    assertEquals("queried entity did not match--did automatic txn fail?", UNIQUE_TEXT,
+        ((JpaTestEntity) result).getText());
   }
 
   public void testSimpleTransactionWithMerge() {
@@ -97,12 +99,14 @@ public class ManagedLocalTransactionsAcrossRequestTest extends TestCase {
 
     Object result = em.createQuery("from JpaTestEntity where text = :text")
         .setParameter("text", UNIQUE_TEXT_MERGE).getSingleResult();
+
     injector.getInstance(UnitOfWork.class).end();
+    injector.getInstance(UnitOfWork.class).begin();
 
     assertTrue(result instanceof JpaTestEntity);
 
-    assertEquals("queried entity did not match--did automatic txn fail?",
-        UNIQUE_TEXT_MERGE, ((JpaTestEntity) result).getText());
+    assertEquals("queried entity did not match--did automatic txn fail?", UNIQUE_TEXT_MERGE,
+        ((JpaTestEntity) result).getText());
     injector.getInstance(UnitOfWork.class).end();
 
   }
@@ -127,22 +131,22 @@ public class ManagedLocalTransactionsAcrossRequestTest extends TestCase {
     } catch (IOException e) {
       //ignore
       injector.getInstance(UnitOfWork.class).end();
+      injector.getInstance(UnitOfWork.class).begin();
     }
 
     EntityManager em = injector.getInstance(EntityManagerProvider.class).get();
 
-    assertFalse("Previous EM was not closed by transactional service (rollback didnt happen?)",
-        em.getTransaction().isActive());
+    assertFalse("Previous EM was not closed by transactional service (rollback didnt happen?)", em
+        .getTransaction().isActive());
 
     //test that the data has been stored
     try {
       em.createQuery("from JpaTestEntity where text = :text")
           .setParameter("text", TRANSIENT_UNIQUE_TEXT).getSingleResult();
-      injector.getInstance(UnitOfWork.class).end();
       fail();
-    } catch (NoResultException e) {}
-
-    injector.getInstance(UnitOfWork.class).end();
+    } catch (NoResultException e) {
+      // ok when no result found
+    }
   }
 
   public void testSimpleTransactionRollbackOnUnchecked() {
@@ -151,20 +155,21 @@ public class ManagedLocalTransactionsAcrossRequestTest extends TestCase {
     } catch (RuntimeException re) {
       //ignore
       injector.getInstance(UnitOfWork.class).end();
+      injector.getInstance(UnitOfWork.class).begin();
     }
 
     EntityManager em = injector.getInstance(EntityManagerProvider.class).get();
-    assertFalse("Session was not closed by transactional service (rollback didnt happen?)",
-        em.getTransaction().isActive());
+    assertFalse("Session was not closed by transactional service (rollback didnt happen?)", em
+        .getTransaction().isActive());
 
     try {
       em.createQuery("from JpaTestEntity where text = :text")
           .setParameter("text", TRANSIENT_UNIQUE_TEXT).getSingleResult();
       injector.getInstance(UnitOfWork.class).end();
       fail();
-    } catch (NoResultException e) {}
-    
-    injector.getInstance(UnitOfWork.class).end();
+    } catch (NoResultException e) {
+      // ok when no result found
+    }
   }
 
   public static class TransactionalObject {
