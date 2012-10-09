@@ -7,8 +7,12 @@
     <!-- JPA test "unit" -->
     <persistence-unit name="testUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        
+
         <class>com.github.sclassen.guicejpa.testframework.TransactionTestEntity</class>
+
+        <class>com.google.inject.persist.jpa.JpaTestEntity</class>
+        <class>com.google.inject.persist.jpa.JpaParentTestEntity</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
