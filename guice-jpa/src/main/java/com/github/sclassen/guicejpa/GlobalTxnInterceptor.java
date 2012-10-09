@@ -48,8 +48,8 @@ class GlobalTxnInterceptor implements MethodInterceptor {
   /** Thread local store for user {@link UserTransactionFacade}. */
   private final ThreadLocal<UserTransactionFacade> userTransactions = new ThreadLocal<UserTransactionFacade>();
 
-  /** cache for {@link LocalTransactional} annotations per method. */
-  private final Map<Method, GlobalTransactional> transactionalCache = new MapMaker().weakKeys()
+  /** cache for {@link Transactional} annotations per method. */
+  private final Map<Method, Transactional> transactionalCache = new MapMaker().weakKeys()
       .makeMap();
 
 
@@ -134,7 +134,7 @@ class GlobalTxnInterceptor implements MethodInterceptor {
     try {
       return methodInvocation.proceed();
     } catch (Throwable e) {
-      GlobalTransactional t = readTransactionMetadata(methodInvocation);
+      Transactional t = readTransactionMetadata(methodInvocation);
       if (rollbackIsNecessary(t, e)) {
         transactionFacade.rollback();
       } else {
@@ -146,24 +146,24 @@ class GlobalTxnInterceptor implements MethodInterceptor {
   }
 
   /**
-   * Reads the @GlobalTransactional of a given method invocation.
+   * Reads the @Transactional of a given method invocation.
    *
-   * @param methodInvocation the method invocation for which to obtain the @GlobalTransactional.
-   * @return the @GlobalTransactional of the given method invocation. Never {@code null}.
+   * @param methodInvocation the method invocation for which to obtain the @Transactional.
+   * @return the @Transactional of the given method invocation. Never {@code null}.
    */
-  private GlobalTransactional readTransactionMetadata(MethodInvocation methodInvocation) {
+  private Transactional readTransactionMetadata(MethodInvocation methodInvocation) {
     final Method method = methodInvocation.getMethod();
-    GlobalTransactional result;
+    Transactional result;
 
     result = transactionalCache.get(method);
     if (null == result) {
-      result = method.getAnnotation(GlobalTransactional.class);
+      result = method.getAnnotation(Transactional.class);
       if (null == result) {
         final Class<?> targetClass = methodInvocation.getThis().getClass();
-        result = targetClass.getAnnotation(GlobalTransactional.class);
+        result = targetClass.getAnnotation(Transactional.class);
       }
       if (null == result) {
-        result = DefaultGlobalTransactional.class.getAnnotation(GlobalTransactional.class);
+        result = DefaultTransactional.class.getAnnotation(Transactional.class);
       }
 
       transactionalCache.put(method, result);
@@ -178,7 +178,7 @@ class GlobalTxnInterceptor implements MethodInterceptor {
    * @param e The exception to test for rollback
    * @return {@code true} if a rollback is necessary, {@code false} otherwise.
    */
-  private boolean rollbackIsNecessary(GlobalTransactional transactional, Throwable e) {
+  private boolean rollbackIsNecessary(Transactional transactional, Throwable e) {
     for (Class<? extends Exception> rollbackOn : transactional.rollbackOn()) {
       if (rollbackOn.isInstance(e)) {
         for (Class<? extends Exception> ignore : transactional.ignore()) {
@@ -279,9 +279,9 @@ class GlobalTxnInterceptor implements MethodInterceptor {
     }
   }
 
-  /** Helper class for obtaining the default of @GlobalTransactional. */
-  @GlobalTransactional
-  private static class DefaultGlobalTransactional {
+  /** Helper class for obtaining the default of @Transactional. */
+  @Transactional
+  private static class DefaultTransactional {
   }
 
 }

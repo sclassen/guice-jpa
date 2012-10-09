@@ -16,7 +16,7 @@
  */
 package com.github.sclassen.guicejpa.testframework.tasks;
 
-import com.github.sclassen.guicejpa.LocalTransactional;
+import com.github.sclassen.guicejpa.Transactional;
 import com.github.sclassen.guicejpa.testframework.TransactionTestEntity;
 import com.github.sclassen.guicejpa.testframework.TransactionalTask;
 import com.github.sclassen.guicejpa.testframework.exceptions.RuntimeTestException;
@@ -35,7 +35,7 @@ public class TaskRollingBackOnTestExceptionThrowingNone extends TransactionalTas
    * {@inheritDoc}
    */
   @Override
-  @LocalTransactional(rollbackOn=TestException.class)
+  @Transactional(rollbackOn=TestException.class)
   public void doTransactional() throws TestException, RuntimeTestException {
     storeEntity(new TransactionTestEntity());
     doOtherTasks();

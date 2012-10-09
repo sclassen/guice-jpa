@@ -28,7 +28,7 @@ import javax.persistence.EntityManager;
  * For applications running in a container the {@link PersistenceFilter} is recommended.
  * It will start a unit of work for every incoming request and properly close it at the end.
  * <p/>
- * For stand alone application it is recommended to relay on the @{@link LocalTransactional}.
+ * For stand alone application it is recommended to relay on the @{@link Transactional}.
  * The transaction handler will automatically span a unit of work around a transaction.
  * <p/>
  * The most likely scenario in which one would want to take manual control over the unit of work

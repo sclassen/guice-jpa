@@ -66,7 +66,7 @@ public final class ContainerManagedPersistenceUnitBuilder extends AbstractPersis
    */
   public void useLocalTransaction() {
     checkNotNull(module, "cannot change a module after creating the injector.");
-    module.setTransactionAnnotation(LocalTransactional.class);
+    module.setTransactionType(TransactionType.LOCAL);
   }
 
   /**
@@ -75,7 +75,7 @@ public final class ContainerManagedPersistenceUnitBuilder extends AbstractPersis
    */
   public void useGlobalTransaction() {
     checkNotNull(module, "cannot change a module after creating the injector.");
-    module.setTransactionAnnotation(GlobalTransactional.class);
+    module.setTransactionType(TransactionType.GLOBAL);
   }
 
   /**

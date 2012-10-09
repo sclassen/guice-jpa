@@ -18,7 +18,6 @@ package com.github.sclassen.guicejpa;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.lang.annotation.Annotation;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -88,14 +87,6 @@ public class ApplicationManagedPersistenceUnitModule extends AbstractPersistence
 
 
   // ---- Methods
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  final Class<? extends Annotation> getTxnAnnotation() {
-    return LocalTransactional.class;
-  }
 
   /**
    * {@inheritDoc}

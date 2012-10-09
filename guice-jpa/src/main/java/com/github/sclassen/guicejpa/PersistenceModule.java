@@ -172,7 +172,7 @@ public final class PersistenceModule extends AbstractModule {
     for (AbstractPersistenceUnitModule module : modules) {
       install(module);
 
-      final Matcher<AnnotatedElement> matcher = Matchers.annotatedWith(module.getTxnAnnotation());
+      final Matcher<AnnotatedElement> matcher = Matchers.annotatedWith(Transactional.class);
       final MethodInterceptor transactionInterceptor = module.getTransactionInterceptor(utProvider);
 
       bindInterceptor(matcher, any(), transactionInterceptor);

@@ -88,11 +88,6 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
       UserTransactionProvider utProvider);
 
   /**
-   * @return the annotation for transactional methods to intercept.
-   */
-  abstract Class<? extends Annotation> getTxnAnnotation();
-
-  /**
    * @return the persistence service for the current persistence unit.
    */
   abstract PersistenceService getPersistenceService();

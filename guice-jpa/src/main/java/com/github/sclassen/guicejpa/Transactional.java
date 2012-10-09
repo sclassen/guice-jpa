@@ -23,20 +23,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.persistence.EntityTransaction;
-
 import com.google.inject.Injector;
 
 /**
- * Marks a method or class to be executed within a local transaction.
+ * Marks a method or class to be executed within a transaction.
  * <p/>
- * This will span a new {@link EntityTransaction} around the method unless there is already a
+ * This will span a new transaction around the method unless there is already a
  * running transaction. In the case that there is a running transaction no new transaction is
  * started. If a rollback happens for a method which did not start the transaction the already
  * existing transaction will be marked as rollbackOnly.
  * <p/>
- * Guice uses AOP to enhance a method annotated with @LocalTransactional with a wrapper.
- * This means the @LocalTransactional only works as expected when:
+ * Guice uses AOP to enhance a method annotated with @Transactional with a wrapper.
+ * This means the @Transactional only works as expected when:
  * <ul>
  *    <li>
  *        The object on which the method is called has been created by guice. This can be either
@@ -50,7 +48,7 @@ import com.google.inject.Injector;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface LocalTransactional {
+public @interface Transactional {
 
   /**
    * A List of annotations for application managed persistence units on which to start a

@@ -48,8 +48,8 @@ class LocalTxnInterceptor implements MethodInterceptor {
   /** Annotation of the persistence unit this interceptor belongs to. */
   private final Class<? extends Annotation> puAnntoation;
 
-  /** cache for {@link LocalTransactional} annotations per method. */
-  private final Map<Method, LocalTransactional> transactionalCache = new MapMaker().weakKeys()
+  /** cache for {@link Transactional} annotations per method. */
+  private final Map<Method, Transactional> transactionalCache = new MapMaker().weakKeys()
       .makeMap();
 
 
@@ -113,7 +113,7 @@ class LocalTxnInterceptor implements MethodInterceptor {
       return true;
     }
 
-    final LocalTransactional localTransaction = readTransactionMetadata(methodInvocation);
+    final Transactional localTransaction = readTransactionMetadata(methodInvocation);
     final Class<? extends Annotation>[] units = localTransaction.onUnit();
     if (null == units || 0 == units.length) {
       return true;
@@ -159,7 +159,7 @@ class LocalTxnInterceptor implements MethodInterceptor {
     try {
       return methodInvocation.proceed();
     } catch (Throwable e) {
-      LocalTransactional t = readTransactionMetadata(methodInvocation);
+      Transactional t = readTransactionMetadata(methodInvocation);
       if (rollbackIsNecessary(t, e)) {
         transactionFacade.rollback();
       } else {
@@ -171,24 +171,24 @@ class LocalTxnInterceptor implements MethodInterceptor {
   }
 
   /**
-   * Reads the @LocalTransactional of a given method invocation.
+   * Reads the @Transactional of a given method invocation.
    *
-   * @param methodInvocation the method invocation for which to obtain the @LocalTransactional.
-   * @return the @LocalTransactional of the given method invocation. Never {@code null}.
+   * @param methodInvocation the method invocation for which to obtain the @Transactional.
+   * @return the @Transactional of the given method invocation. Never {@code null}.
    */
-  private LocalTransactional readTransactionMetadata(MethodInvocation methodInvocation) {
+  private Transactional readTransactionMetadata(MethodInvocation methodInvocation) {
     final Method method = methodInvocation.getMethod();
-    LocalTransactional result;
+    Transactional result;
 
     result = transactionalCache.get(method);
     if (null == result) {
-      result = method.getAnnotation(LocalTransactional.class);
+      result = method.getAnnotation(Transactional.class);
       if (null == result) {
         final Class<?> targetClass = methodInvocation.getThis().getClass();
-        result = targetClass.getAnnotation(LocalTransactional.class);
+        result = targetClass.getAnnotation(Transactional.class);
       }
       if (null == result) {
-        result = DefaultLocalTransactional.class.getAnnotation(LocalTransactional.class);
+        result = DefaultTransactional.class.getAnnotation(Transactional.class);
       }
 
       transactionalCache.put(method, result);
@@ -203,7 +203,7 @@ class LocalTxnInterceptor implements MethodInterceptor {
    * @param e The exception to test for rollback
    * @return {@code true} if a rollback is necessary, {@code false} otherwise.
    */
-  private boolean rollbackIsNecessary(LocalTransactional transactional, Throwable e) {
+  private boolean rollbackIsNecessary(Transactional transactional, Throwable e) {
     for (Class<? extends Exception> rollbackOn : transactional.rollbackOn()) {
       if (rollbackOn.isInstance(e)) {
         for (Class<? extends Exception> ignore : transactional.ignore()) {
@@ -302,9 +302,9 @@ class LocalTxnInterceptor implements MethodInterceptor {
     }
   }
 
-  /** Helper class for obtaining the default of @GlobalTransactional. */
-  @LocalTransactional
-  private static class DefaultLocalTransactional {
+  /** Helper class for obtaining the default of @Transactional. */
+  @Transactional
+  private static class DefaultTransactional {
   }
 
 }

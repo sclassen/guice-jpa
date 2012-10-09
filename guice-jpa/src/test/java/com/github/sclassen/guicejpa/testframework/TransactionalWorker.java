@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.sclassen.guicejpa.EntityManagerProvider;
-import com.github.sclassen.guicejpa.LocalTransactional;
+import com.github.sclassen.guicejpa.Transactional;
 import com.github.sclassen.guicejpa.UnitOfWork;
 import com.github.sclassen.guicejpa.testframework.exceptions.RuntimeTestException;
 import com.github.sclassen.guicejpa.testframework.exceptions.TestException;
@@ -72,7 +72,7 @@ public class TransactionalWorker {
   private void checkTransactionalAnnotation(Class<? extends TransactionalTask> taskType) {
     try {
       final Method method = taskType.getMethod(DO_TRANSACTIONAL);
-      final LocalTransactional annotation = method.getAnnotation(LocalTransactional.class);
+      final Transactional annotation = method.getAnnotation(Transactional.class);
       checkNotNull(annotation,
           "@Transactional annotation missing on %s.%s", taskType.getSimpleName(), DO_TRANSACTIONAL);
     }
@@ -110,7 +110,7 @@ public class TransactionalWorker {
   /**
    * Check all stored entities if they actually have been persisted in the DB.
    */
-  @LocalTransactional
+  @Transactional
   public void assertAllEntitesHaveBeenPersisted() {
     checkState(!storedEntities.isEmpty(), "no entities to check");
     for(TransactionTestEntity storedEntity:storedEntities) {
@@ -122,7 +122,7 @@ public class TransactionalWorker {
   /**
    * Check all stored entities if they actually have NOT been persisted in the DB.
    */
-  @LocalTransactional
+  @Transactional
   public void assertNoEntityHasBeenPersisted() {
     checkState(!storedEntities.isEmpty(), "no entities to check");
     for(TransactionTestEntity storedEntity:storedEntities) {

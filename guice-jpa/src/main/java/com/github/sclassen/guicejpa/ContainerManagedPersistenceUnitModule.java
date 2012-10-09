@@ -18,7 +18,6 @@ package com.github.sclassen.guicejpa;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.lang.annotation.Annotation;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -55,7 +54,7 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
    * Annotation for the transactional methods. This defines if the PU uses local or global
    * Transaction
    */
-  private Class<? extends Annotation> transactionAnnotation = LocalTransactional.class;
+  private TransactionType transactionType = TransactionType.LOCAL;
 
 
   // ---- Constructors
@@ -97,21 +96,20 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
   // ---- Methods
 
   /**
-   * {@inheritDoc}
+   * @return the type of transaction used for this persistence unit.
    */
-  @Override
-  final Class<? extends Annotation> getTxnAnnotation() {
-    return transactionAnnotation;
+  final TransactionType getTransactionType() {
+    return transactionType;
   }
 
 
-  final void setTransactionAnnotation(Class<? extends Annotation> transactionAnnotation) {
-    if (!LocalTransactional.class.equals(transactionAnnotation)
-        && !GlobalTransactional.class.equals(transactionAnnotation)) {
-      throw new IllegalArgumentException(transactionAnnotation
-          + "is not a valid transactionAnnotation");
-    }
-    this.transactionAnnotation = transactionAnnotation;
+  /**
+   * Sets the type of transaction to use for this persistence unit.
+   * 
+   * @param transactionType
+   */
+  final void setTransactionType(TransactionType transactionType) {
+    this.transactionType = transactionType;
   }
 
   /**
@@ -120,10 +118,10 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
   @Override
   final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
       UserTransactionProvider utProvider) {
-    if (LocalTransactional.class.equals(transactionAnnotation)) {
+    if (TransactionType.LOCAL == transactionType) {
       return new LocalTxnInterceptor(emProvider, getAnnotation());
     }
-    if (GlobalTransactional.class.equals(transactionAnnotation)) {
+    if (TransactionType.GLOBAL == transactionType) {
       checkNotNull(utProvider, "the JNDI name of the user transaction must be specified if a "
           + "persistence wants to use global transactions");
       return new GlobalTxnInterceptor(emProvider, utProvider);
