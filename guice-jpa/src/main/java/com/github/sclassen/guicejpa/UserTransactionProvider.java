@@ -29,6 +29,7 @@ class UserTransactionProvider {
 
   // ---- Memebers
 
+  /** The JNDI name of the user transaction. */
   private final String utJndiName;
 
 
