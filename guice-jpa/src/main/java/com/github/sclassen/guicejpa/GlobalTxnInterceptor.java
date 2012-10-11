@@ -32,12 +32,8 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
 
   // ---- Members
 
-
   /** Provider for {@link UserTransactionFacade}. */
   private final UserTransactionProvider utProvider;
-
-  /** Thread local store for user {@link UserTransactionFacade}. */
-  private final ThreadLocal<UserTransactionFacade> userTransactions = new ThreadLocal<UserTransactionFacade>();
 
 
   // ---- Constructor
@@ -61,16 +57,10 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
    * Abstract class which hides away the details of inner (nested) and outer transactions.
    */
   public TransactionFacade getTransactionFacade(EntityManager em) {
-    final UserTransactionFacade ut;
-    if (null == userTransactions.get()) {
-      ut = utProvider.get();
-      userTransactions.set(ut);
-    } else {
-      ut = userTransactions.get();
-    }
-    
+    final UserTransactionFacade ut = utProvider.get();
+
     if (Status.STATUS_NO_TRANSACTION == ut.getStatus()) {
-      return new InnerTransaction(ut);
+      return new InnerTransaction(ut, em);
     }
     return new OuterTransaction(ut, em);
   }
@@ -85,9 +75,11 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
    */
   private static class InnerTransaction implements TransactionFacade {
     private final UserTransactionFacade txn;
+    private final EntityManager em;
 
-    InnerTransaction(UserTransactionFacade txn) {
+    InnerTransaction(UserTransactionFacade txn, EntityManager em) {
       this.txn = txn;
+      this.em = em;
     }
 
     /**
@@ -95,7 +87,7 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
      */
     @Override
     public void begin() {
-      // Do nothing
+      em.joinTransaction();
     }
 
     /**
