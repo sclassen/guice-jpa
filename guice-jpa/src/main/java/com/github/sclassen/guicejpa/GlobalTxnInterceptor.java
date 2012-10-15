@@ -16,6 +16,8 @@
  */
 package com.github.sclassen.guicejpa;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.lang.annotation.Annotation;
 
 import javax.persistence.EntityManager;
@@ -32,8 +34,8 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
 
   // ---- Members
 
-  /** Provider for {@link UserTransactionFacade}. */
-  private final UserTransactionProvider utProvider;
+  /** The {@link UserTransactionFacade}. */
+  private final UserTransactionFacade utFacade;
 
 
   // ---- Constructor
@@ -42,12 +44,14 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
    * Constructor.
    *
    * @param emProvider the provider for {@link EntityManager}.
-   * @param utProvider the provider for {@link UserTransactionFacade}.
+   * @param puAnntoation the annotation used for this persistence unit.
+   * @param utFacade the {@link UserTransactionFacade}.
    */
   public GlobalTxnInterceptor(EntityManagerProviderImpl emProvider,
-      Class<? extends Annotation> puAnntoation, UserTransactionProvider utProvider) {
+      Class<? extends Annotation> puAnntoation, UserTransactionFacade utFacade) {
     super(emProvider, puAnntoation);
-    this.utProvider = utProvider;
+    checkNotNull(utFacade);
+    this.utFacade = utFacade;
   }
 
 
@@ -57,12 +61,10 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
    * Abstract class which hides away the details of inner (nested) and outer transactions.
    */
   public TransactionFacade getTransactionFacade(EntityManager em) {
-    final UserTransactionFacade ut = utProvider.get();
-
-    if (Status.STATUS_NO_TRANSACTION == ut.getStatus()) {
-      return new InnerTransaction(ut, em);
+    if (Status.STATUS_NO_TRANSACTION == utFacade.getStatus()) {
+      return new InnerTransaction(utFacade, em);
     }
-    return new OuterTransaction(ut, em);
+    return new OuterTransaction(utFacade, em);
   }
 
 

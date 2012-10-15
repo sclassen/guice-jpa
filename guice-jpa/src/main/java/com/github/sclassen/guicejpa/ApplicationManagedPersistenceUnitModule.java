@@ -93,7 +93,7 @@ public class ApplicationManagedPersistenceUnitModule extends AbstractPersistence
    */
   @Override
   final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
-      UserTransactionProvider utProvider) {
+      UserTransactionFacade utFacade) {
     return new LocalTxnInterceptor(emProvider, getAnnotation());
   }
 

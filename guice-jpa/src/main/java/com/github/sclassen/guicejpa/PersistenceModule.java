@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
@@ -69,9 +72,14 @@ public final class PersistenceModule extends AbstractModule {
   private final PersistenceUnitContainer puContainer = new PersistenceUnitContainer();
 
   /**
-   * The provider for the {@link UserTransactionFacade}.
+   * The JNDI name to lookup the {@link UserTransaction}.
    */
-  private UserTransactionProvider utProvider = null;
+  private String utJndiName;
+
+  /**
+   * The {@link UserTransactionFacade}.
+   */
+  private UserTransactionFacade utFacade = null;
 
 
   // ---- Methods
@@ -93,8 +101,8 @@ public final class PersistenceModule extends AbstractModule {
    * @param properties the properties to pass to the {@link EntityManagerFactory}.
    * @return a builder to further configure the persistence unit.
    */
-  public ApplicationManagedPersistenceUnitBuilder addApplicationManagedPersistenceUnit(String puName,
-      Properties properties) {
+  public ApplicationManagedPersistenceUnitBuilder addApplicationManagedPersistenceUnit(
+      String puName, Properties properties) {
     return add(new ApplicationManagedPersistenceUnitModule(puName, properties));
   }
 
@@ -105,7 +113,9 @@ public final class PersistenceModule extends AbstractModule {
    * @return a builder to further configure the persistence unit.
    */
   public ApplicationManagedPersistenceUnitBuilder add(ApplicationManagedPersistenceUnitModule module) {
-    final ApplicationManagedPersistenceUnitBuilder builder = new ApplicationManagedPersistenceUnitBuilder(module);
+    ensureConfigurHasNotYetBeenExecuted();
+    final ApplicationManagedPersistenceUnitBuilder builder = new ApplicationManagedPersistenceUnitBuilder(
+        module);
     moduleBuilders.add(builder);
     return builder;
   }
@@ -116,7 +126,8 @@ public final class PersistenceModule extends AbstractModule {
    * @param puName the name of the persistence unit as specified in the persistence.xml.
    * @return a builder to further configure the persistence unit.
    */
-  public ContainerManagedPersistenceUnitBuilder addContainerManagedPersistenceUnit(String emfJndiName) {
+  public ContainerManagedPersistenceUnitBuilder addContainerManagedPersistenceUnit(
+      String emfJndiName) {
     return add(new ContainerManagedPersistenceUnitModule(emfJndiName));
   }
 
@@ -127,8 +138,8 @@ public final class PersistenceModule extends AbstractModule {
    * @param properties the properties to pass to the {@link EntityManager}.
    * @return a builder to further configure the persistence unit.
    */
-  public ContainerManagedPersistenceUnitBuilder addContainerManagedPersistenceUnit(String emfJndiName,
-      Properties properties) {
+  public ContainerManagedPersistenceUnitBuilder addContainerManagedPersistenceUnit(
+      String emfJndiName, Properties properties) {
     return add(new ContainerManagedPersistenceUnitModule(emfJndiName, properties));
   }
 
@@ -139,7 +150,9 @@ public final class PersistenceModule extends AbstractModule {
    * @return a builder to further configure the persistence unit.
    */
   public ContainerManagedPersistenceUnitBuilder add(ContainerManagedPersistenceUnitModule module) {
-    final ContainerManagedPersistenceUnitBuilder builder = new ContainerManagedPersistenceUnitBuilder(module);
+    ensureConfigurHasNotYetBeenExecuted();
+    final ContainerManagedPersistenceUnitBuilder builder = new ContainerManagedPersistenceUnitBuilder(
+        module);
     moduleBuilders.add(builder);
     return builder;
   }
@@ -150,10 +163,8 @@ public final class PersistenceModule extends AbstractModule {
    * @param utJndiName the JNDI name of the container managed {@link UserTransaction}.
    */
   public void setUserTransactionJndiName(String utJndiName) {
-    if (configureHasNotBeenExecutedYet()) {
-      utProvider = new UserTransactionProvider(utJndiName);
-    }
-    throw new IllegalStateException("cannot change a module after creating the injector.");
+    ensureConfigurHasNotYetBeenExecuted();
+    this.utJndiName = utJndiName;
   }
 
   /**
@@ -162,6 +173,7 @@ public final class PersistenceModule extends AbstractModule {
   @Override
   protected void configure() {
     if (configureHasNotBeenExecutedYet()) {
+      initUserTransactionFacade();
       for (AbstractPersistenceModuleBuilder builder : moduleBuilders) {
         final AbstractPersistenceUnitModule module = builder.build();
         puContainer.add(module.getPersistenceService(), module.getUnitOfWork());
@@ -173,7 +185,7 @@ public final class PersistenceModule extends AbstractModule {
       install(module);
 
       final Matcher<AnnotatedElement> matcher = Matchers.annotatedWith(Transactional.class);
-      final MethodInterceptor transactionInterceptor = module.getTransactionInterceptor(utProvider);
+      final MethodInterceptor transactionInterceptor = module.getTransactionInterceptor(utFacade);
 
       bindInterceptor(matcher, any(), transactionInterceptor);
       bindInterceptor(any(), matcher, transactionInterceptor);
@@ -189,6 +201,33 @@ public final class PersistenceModule extends AbstractModule {
    */
   private boolean configureHasNotBeenExecutedYet() {
     return modules.size() == 0;
+  }
+
+  /**
+   * Make sure that the {@link #configure()} method has not been executed yet.
+   */
+  private void ensureConfigurHasNotYetBeenExecuted() {
+    if (configureHasNotBeenExecutedYet()) {
+      return;
+    }
+    throw new IllegalStateException("cannot change a module after creating the injector.");
+  }
+
+  /**
+   * Initializes the field {@link #utFacade} with the {@link UserTransaction} obtained by a
+   * JNDI lookup.
+   */
+  private void initUserTransactionFacade() {
+    if (null != utJndiName) {
+      try {
+        final InitialContext ctx = new InitialContext();
+        UserTransaction txn = (UserTransaction) ctx.lookup(utJndiName);
+        utFacade = new UserTransactionFacade(txn);
+      } catch (NamingException e) {
+        throw new RuntimeException("lookup for UserTransaction with JNDI name '" + utJndiName
+            + "' failed", e);
+      }
+    }
   }
 
 }

@@ -117,14 +117,14 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
    */
   @Override
   final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
-      UserTransactionProvider utProvider) {
+      UserTransactionFacade utFacade) {
     if (TransactionType.LOCAL == transactionType) {
       return new LocalTxnInterceptor(emProvider, getAnnotation());
     }
     if (TransactionType.GLOBAL == transactionType) {
-      checkNotNull(utProvider, "the JNDI name of the user transaction must be specified if a "
+      checkNotNull(utFacade, "the JNDI name of the user transaction must be specified if a "
           + "persistence wants to use global transactions");
-      return new GlobalTxnInterceptor(emProvider, getAnnotation(), utProvider);
+      return new GlobalTxnInterceptor(emProvider, getAnnotation(), utFacade);
     }
 
     throw new IllegalStateException();

@@ -67,12 +67,12 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   /**
    * The method interceptor for intercepting transactional methods.
    *
-   * @param utProvider the provider for {@link UserTransactionFacade}. May be {@code null}.
+   * @param utFacade the {@link UserTransactionFacade}. May be {@code null}.
    * @return the interceptor for intercepting transactional methods.
    */
-  final MethodInterceptor getTransactionInterceptor(UserTransactionProvider utProvider) {
+  final MethodInterceptor getTransactionInterceptor(UserTransactionFacade utFacade) {
     if (null == transactionInterceptor) {
-      transactionInterceptor = getTxnInterceptor(emProvider, utProvider);
+      transactionInterceptor = getTxnInterceptor(emProvider, utFacade);
     }
     return transactionInterceptor;
   }
@@ -81,11 +81,11 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
    * Subclasses must implement this method and return the appropriate MethodInterceptor.
    *
    * @param emProvider the provider for {@link EntityManager}. Must not be {@code null}.
-   * @param utProvider the provider for {@link UserTransactionFacade}. May be {@code null}.
+   * @param utFacade the {@link UserTransactionFacade}. May be {@code null}.
    * @return the interceptor for intercepting transactional methods.
    */
   abstract MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
-      UserTransactionProvider utProvider);
+      UserTransactionFacade utFacade);
 
   /**
    * @return the persistence service for the current persistence unit.
