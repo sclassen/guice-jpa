@@ -24,6 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.google.inject.Injector;
+import com.google.inject.Key;
 
 /**
  * Marks a method or class to be executed within a transaction.
@@ -38,7 +39,8 @@ import com.google.inject.Injector;
  * <ul>
  *    <li>
  *        The object on which the method is called has been created by guice. This can be either
- *        done by having it injected into your class or by calling {@link Injector#getInstance()}
+ *        done by having it injected into your class or by calling
+ *        {@link Injector#getInstance(Class)} or {@link Injector#getInstance(Key)}.
  *    </li>
  *    <li>
  *        The method which should be run transactional is not private and not final

@@ -124,7 +124,7 @@ public final class PersistenceModule extends AbstractModule {
   /**
    * Add an container managed persistence unit.
    *
-   * @param puName the name of the persistence unit as specified in the persistence.xml.
+   * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}.
    * @return a builder to further configure the persistence unit.
    */
   public PersistenceUnitBuilder addContainerManagedPersistenceUnit(String emfJndiName) {
@@ -134,7 +134,7 @@ public final class PersistenceModule extends AbstractModule {
   /**
    * Add an container managed persistence unit.
    *
-   * @param puName the name of the persistence unit as specified in the persistence.xml.
+   * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}.
    * @param properties the properties to pass to the {@link EntityManager}.
    * @return a builder to further configure the persistence unit.
    */
