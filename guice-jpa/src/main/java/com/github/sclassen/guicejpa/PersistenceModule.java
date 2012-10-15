@@ -16,6 +16,7 @@
  */
 package com.github.sclassen.guicejpa;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.inject.matcher.Matchers.any;
 
 import java.lang.reflect.AnnotatedElement;
@@ -60,7 +61,7 @@ public final class PersistenceModule extends AbstractModule {
   // ---- Members
 
   /** List of all module builders. */
-  private final List<AbstractPersistenceModuleBuilder> moduleBuilders = new ArrayList<AbstractPersistenceModuleBuilder>();
+  private final List<PersistenceUnitBuilder> moduleBuilders = new ArrayList<PersistenceUnitBuilder>();
 
   /**
    * List of all persistence unit modules.
@@ -90,7 +91,7 @@ public final class PersistenceModule extends AbstractModule {
    * @param puName the name of the persistence unit as specified in the persistence.xml.
    * @return a builder to further configure the persistence unit.
    */
-  public ApplicationManagedPersistenceUnitBuilder addApplicationManagedPersistenceUnit(String puName) {
+  public PersistenceUnitBuilder addApplicationManagedPersistenceUnit(String puName) {
     return add(new ApplicationManagedPersistenceUnitModule(puName));
   }
 
@@ -101,8 +102,8 @@ public final class PersistenceModule extends AbstractModule {
    * @param properties the properties to pass to the {@link EntityManagerFactory}.
    * @return a builder to further configure the persistence unit.
    */
-  public ApplicationManagedPersistenceUnitBuilder addApplicationManagedPersistenceUnit(
-      String puName, Properties properties) {
+  public PersistenceUnitBuilder addApplicationManagedPersistenceUnit(String puName,
+      Properties properties) {
     return add(new ApplicationManagedPersistenceUnitModule(puName, properties));
   }
 
@@ -112,10 +113,10 @@ public final class PersistenceModule extends AbstractModule {
    * @param module the module of the persistence unit.
    * @return a builder to further configure the persistence unit.
    */
-  public ApplicationManagedPersistenceUnitBuilder add(ApplicationManagedPersistenceUnitModule module) {
+  public PersistenceUnitBuilder add(ApplicationManagedPersistenceUnitModule module) {
     ensureConfigurHasNotYetBeenExecuted();
-    final ApplicationManagedPersistenceUnitBuilder builder = new ApplicationManagedPersistenceUnitBuilder(
-        module);
+    checkNotNull(module);
+    final PersistenceUnitBuilder builder = new PersistenceUnitBuilder(module);
     moduleBuilders.add(builder);
     return builder;
   }
@@ -126,8 +127,7 @@ public final class PersistenceModule extends AbstractModule {
    * @param puName the name of the persistence unit as specified in the persistence.xml.
    * @return a builder to further configure the persistence unit.
    */
-  public ContainerManagedPersistenceUnitBuilder addContainerManagedPersistenceUnit(
-      String emfJndiName) {
+  public PersistenceUnitBuilder addContainerManagedPersistenceUnit(String emfJndiName) {
     return add(new ContainerManagedPersistenceUnitModule(emfJndiName));
   }
 
@@ -138,8 +138,8 @@ public final class PersistenceModule extends AbstractModule {
    * @param properties the properties to pass to the {@link EntityManager}.
    * @return a builder to further configure the persistence unit.
    */
-  public ContainerManagedPersistenceUnitBuilder addContainerManagedPersistenceUnit(
-      String emfJndiName, Properties properties) {
+  public PersistenceUnitBuilder addContainerManagedPersistenceUnit(String emfJndiName,
+      Properties properties) {
     return add(new ContainerManagedPersistenceUnitModule(emfJndiName, properties));
   }
 
@@ -149,10 +149,10 @@ public final class PersistenceModule extends AbstractModule {
    * @param module the module of the persistence unit.
    * @return a builder to further configure the persistence unit.
    */
-  public ContainerManagedPersistenceUnitBuilder add(ContainerManagedPersistenceUnitModule module) {
+  public PersistenceUnitBuilder add(ContainerManagedPersistenceUnitModule module) {
     ensureConfigurHasNotYetBeenExecuted();
-    final ContainerManagedPersistenceUnitBuilder builder = new ContainerManagedPersistenceUnitBuilder(
-        module);
+    checkNotNull(module);
+    final PersistenceUnitBuilder builder = new PersistenceUnitBuilder(module);
     moduleBuilders.add(builder);
     return builder;
   }
@@ -174,7 +174,7 @@ public final class PersistenceModule extends AbstractModule {
   protected void configure() {
     if (configureHasNotBeenExecutedYet()) {
       initUserTransactionFacade();
-      for (AbstractPersistenceModuleBuilder builder : moduleBuilders) {
+      for (PersistenceUnitBuilder builder : moduleBuilders) {
         final AbstractPersistenceUnitModule module = builder.build();
         puContainer.add(module.getPersistenceService(), module.getUnitOfWork());
         modules.add(module);

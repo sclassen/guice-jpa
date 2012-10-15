@@ -22,12 +22,10 @@ import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.aopalliance.intercept.MethodInterceptor;
-
 /**
  * Persistence module for an application managed persistence unit.
  * <p/>
- * Use the {@link ApplicationManagedPersistenceUnitBuilder} to configure an instance of this class.
+ * Use the {@link PersistenceUnitBuilder} to configure an instance of this class.
  * <p/>
  * This is a private module which will expose the following bindings:
  * <ul>
@@ -87,15 +85,6 @@ public class ApplicationManagedPersistenceUnitModule extends AbstractPersistence
 
 
   // ---- Methods
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
-      UserTransactionFacade utFacade) {
-    return new LocalTxnInterceptor(emProvider, getAnnotation());
-  }
 
   /**
    * {@inheritDoc}

@@ -25,12 +25,12 @@ import java.lang.annotation.Annotation;
  *
  * @author Stephan Classen
  */
-public final class ContainerManagedPersistenceUnitBuilder extends AbstractPersistenceModuleBuilder {
+public final class PersistenceUnitBuilder {
 
   // ---- Members
 
   /** The module which is built by this instance. */
-  private ContainerManagedPersistenceUnitModule module;
+  private AbstractPersistenceUnitModule module;
 
 
   // ---- Constructors
@@ -40,7 +40,7 @@ public final class ContainerManagedPersistenceUnitBuilder extends AbstractPersis
    *
    * @param module the module which is built by this instance.
    */
-  ContainerManagedPersistenceUnitBuilder(ContainerManagedPersistenceUnitModule module) {
+  PersistenceUnitBuilder(AbstractPersistenceUnitModule module) {
     this.module = module;
   }
 
@@ -53,7 +53,7 @@ public final class ContainerManagedPersistenceUnitBuilder extends AbstractPersis
    *
    * @param annotation the annotation. May be {@code null}.
    */
-  public ContainerManagedPersistenceUnitBuilder annotatedWith(Class<? extends Annotation> annotation) {
+  public PersistenceUnitBuilder annotatedWith(Class<? extends Annotation> annotation) {
     checkNotNull(module, "cannot change a module after creating the injector.");
     module.annotatedWith(annotation);
     return this;
@@ -79,12 +79,14 @@ public final class ContainerManagedPersistenceUnitBuilder extends AbstractPersis
   }
 
   /**
-   * {@inheritDoc}
+   * Builds the module and also changes the state of the builder.
+   * After calling this method all calls to the builder will result in an exception.
+   *
+   * @return the persistence module.
    */
-  @Override
-  ContainerManagedPersistenceUnitModule build() {
+  AbstractPersistenceUnitModule build() {
     checkNotNull(module, "build() can only be called once.");
-    final ContainerManagedPersistenceUnitModule m = module;
+    final AbstractPersistenceUnitModule m = module;
     module = null;
     return m;
   }

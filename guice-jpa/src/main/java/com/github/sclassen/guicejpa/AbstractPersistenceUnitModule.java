@@ -47,6 +47,9 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   /** The method interceptor for transactional annotations. */
   private MethodInterceptor transactionInterceptor;
 
+  /** This defines if the PU uses local or global Transaction. */
+  private TransactionType transactionType = TransactionType.LOCAL;
+
 
   // ---- Constructors
 
@@ -65,6 +68,27 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   // ---- Methods
 
   /**
+   * @return the persistence service for the current persistence unit.
+   */
+  abstract PersistenceService getPersistenceService();
+
+  /**
+   * @return the type of transaction used for this persistence unit.
+   */
+  final TransactionType getTransactionType() {
+    return transactionType;
+  }
+
+  /**
+   * Sets the type of transaction to use for this persistence unit.
+   *
+   * @param transactionType
+   */
+  final void setTransactionType(TransactionType transactionType) {
+    this.transactionType = transactionType;
+  }
+
+  /**
    * The method interceptor for intercepting transactional methods.
    *
    * @param utFacade the {@link UserTransactionFacade}. May be {@code null}.
@@ -78,19 +102,25 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   }
 
   /**
-   * Subclasses must implement this method and return the appropriate MethodInterceptor.
+   * Returns the apropriate interceptor depending on the value of {@link #transactionType}.
    *
    * @param emProvider the provider for {@link EntityManager}. Must not be {@code null}.
    * @param utFacade the {@link UserTransactionFacade}. May be {@code null}.
    * @return the interceptor for intercepting transactional methods.
    */
-  abstract MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
-      UserTransactionFacade utFacade);
+  final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
+      UserTransactionFacade utFacade) {
+    if (TransactionType.LOCAL == transactionType) {
+      return new LocalTxnInterceptor(emProvider, getAnnotation());
+    }
+    if (TransactionType.GLOBAL == transactionType) {
+      checkNotNull(utFacade, "the JNDI name of the user transaction must be specified if a "
+          + "persistence wants to use global transactions");
+      return new GlobalTxnInterceptor(emProvider, getAnnotation(), utFacade);
+    }
 
-  /**
-   * @return the persistence service for the current persistence unit.
-   */
-  abstract PersistenceService getPersistenceService();
+    throw new IllegalStateException();
+  }
 
   /**
    * @return the unit of work for the this persistence unit.

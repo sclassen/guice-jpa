@@ -22,12 +22,10 @@ import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.aopalliance.intercept.MethodInterceptor;
-
 /**
  * Persistence module for an application managed persistence unit.
  * <p/>
- * Use the {@link ContainerManagedPersistenceUnitBuilder} to configure an instance of this class.
+ * Use the {@link PersistenceUnitBuilder} to configure an instance of this class.
  * <p/>
  * This is a private module which will expose the following bindings:
  * <ul>
@@ -49,12 +47,6 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
 
   /** Provider for {@link EntityManagerFactory} */
   private final ContainerManagedEntityManagerFactoryProvider emfProvider;
-
-  /**
-   * Annotation for the transactional methods. This defines if the PU uses local or global
-   * Transaction
-   */
-  private TransactionType transactionType = TransactionType.LOCAL;
 
 
   // ---- Constructors
@@ -94,41 +86,6 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
 
 
   // ---- Methods
-
-  /**
-   * @return the type of transaction used for this persistence unit.
-   */
-  final TransactionType getTransactionType() {
-    return transactionType;
-  }
-
-
-  /**
-   * Sets the type of transaction to use for this persistence unit.
-   * 
-   * @param transactionType
-   */
-  final void setTransactionType(TransactionType transactionType) {
-    this.transactionType = transactionType;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
-      UserTransactionFacade utFacade) {
-    if (TransactionType.LOCAL == transactionType) {
-      return new LocalTxnInterceptor(emProvider, getAnnotation());
-    }
-    if (TransactionType.GLOBAL == transactionType) {
-      checkNotNull(utFacade, "the JNDI name of the user transaction must be specified if a "
-          + "persistence wants to use global transactions");
-      return new GlobalTxnInterceptor(emProvider, getAnnotation(), utFacade);
-    }
-
-    throw new IllegalStateException();
-  }
 
   /**
    * {@inheritDoc}
