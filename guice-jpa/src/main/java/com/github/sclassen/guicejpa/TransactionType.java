@@ -24,8 +24,8 @@ package com.github.sclassen.guicejpa;
 enum TransactionType {
 
   /** A transaction which is local to the application and is not managed by a container. */
-  LOCAL,
+  RESOURCE_LOCAL,
 
   /** A transaction which is global and is managed by a container. */
-  GLOBAL;
+  JTA;
 }

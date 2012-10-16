@@ -26,11 +26,11 @@ import javax.transaction.Status;
 import org.aopalliance.intercept.MethodInterceptor;
 
 /**
- * {@link MethodInterceptor} for intercepting methods which span an global transaction.
+ * {@link MethodInterceptor} for intercepting methods of persistence units of type JTA.
  *
  * @author Stephan Classen
  */
-class GlobalTxnInterceptor extends LocalTxnInterceptor {
+class JtaTxnInterceptor extends AbstractTxnInterceptor {
 
   // ---- Members
 
@@ -47,7 +47,7 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
    * @param puAnntoation the annotation used for this persistence unit.
    * @param utFacade the {@link UserTransactionFacade}.
    */
-  public GlobalTxnInterceptor(EntityManagerProviderImpl emProvider,
+  public JtaTxnInterceptor(EntityManagerProviderImpl emProvider,
       Class<? extends Annotation> puAnntoation, UserTransactionFacade utFacade) {
     super(emProvider, puAnntoation);
     checkNotNull(utFacade);
@@ -62,9 +62,9 @@ class GlobalTxnInterceptor extends LocalTxnInterceptor {
    */
   public TransactionFacade getTransactionFacade(EntityManager em) {
     if (Status.STATUS_NO_TRANSACTION == utFacade.getStatus()) {
-      return new InnerTransaction(utFacade, em);
+      return new OuterTransaction(utFacade, em);
     }
-    return new OuterTransaction(utFacade, em);
+    return new InnerTransaction(utFacade, em);
   }
 
 

@@ -64,18 +64,18 @@ public final class PersistenceUnitBuilder {
    * is managed by the container its transaction won't participate in a global container managed
    * transaction (CMT).
    */
-  public void useLocalTransaction() {
+  public void useResourceLocalTransaction() {
     checkNotNull(module, "cannot change a module after creating the injector.");
-    module.setTransactionType(TransactionType.LOCAL);
+    module.setTransactionType(TransactionType.RESOURCE_LOCAL);
   }
 
   /**
    * Configure the persistence unit to use global transactions. This means all transactions on this
    * data source will participate in a global container managed transaction (CMT)
    */
-  public void useGlobalTransaction() {
+  public void useJtaTransaction() {
     checkNotNull(module, "cannot change a module after creating the injector.");
-    module.setTransactionType(TransactionType.GLOBAL);
+    module.setTransactionType(TransactionType.JTA);
   }
 
   /**

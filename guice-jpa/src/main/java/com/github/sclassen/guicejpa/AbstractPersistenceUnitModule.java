@@ -48,7 +48,7 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   private MethodInterceptor transactionInterceptor;
 
   /** This defines if the PU uses local or global Transaction. */
-  private TransactionType transactionType = TransactionType.LOCAL;
+  private TransactionType transactionType = TransactionType.RESOURCE_LOCAL;
 
 
   // ---- Constructors
@@ -110,13 +110,13 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
    */
   final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
       UserTransactionFacade utFacade) {
-    if (TransactionType.LOCAL == transactionType) {
-      return new LocalTxnInterceptor(emProvider, getAnnotation());
+    if (TransactionType.RESOURCE_LOCAL == transactionType) {
+      return new ResourceLocalTxnInterceptor(emProvider, getAnnotation());
     }
-    if (TransactionType.GLOBAL == transactionType) {
+    if (TransactionType.JTA == transactionType) {
       checkNotNull(utFacade, "the JNDI name of the user transaction must be specified if a "
           + "persistence wants to use global transactions");
-      return new GlobalTxnInterceptor(emProvider, getAnnotation(), utFacade);
+      return new JtaTxnInterceptor(emProvider, getAnnotation(), utFacade);
     }
 
     throw new IllegalStateException();

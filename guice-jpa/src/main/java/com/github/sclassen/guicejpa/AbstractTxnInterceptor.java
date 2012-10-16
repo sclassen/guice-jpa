@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -31,11 +30,11 @@ import org.aopalliance.intercept.MethodInvocation;
 import com.google.common.collect.MapMaker;
 
 /**
- * {@link MethodInterceptor} for intercepting methods which span an local transaction.
+ * Abstract super class for all @{@link Transactional} annotation interceptors.
  *
  * @author Stephan Classen
  */
-class LocalTxnInterceptor implements MethodInterceptor {
+abstract class AbstractTxnInterceptor implements MethodInterceptor {
 
   // ---- Members
 
@@ -49,8 +48,7 @@ class LocalTxnInterceptor implements MethodInterceptor {
   private final Class<? extends Annotation> puAnntoation;
 
   /** cache for {@link Transactional} annotations per method. */
-  private final Map<Method, Transactional> transactionalCache = new MapMaker().weakKeys()
-      .makeMap();
+  private final Map<Method, Transactional> transactionalCache = new MapMaker().weakKeys().makeMap();
 
 
   // ---- Constructor
@@ -61,7 +59,7 @@ class LocalTxnInterceptor implements MethodInterceptor {
    * @param emProvider the provider for {@link EntityManager}.
    * @param puAnntoation the annotation of the persistence unit this interceptor belongs to.
    */
-  public LocalTxnInterceptor(EntityManagerProviderImpl emProvider,
+  public AbstractTxnInterceptor(EntityManagerProviderImpl emProvider,
       Class<? extends Annotation> puAnntoation) {
     checkNotNull(emProvider);
 
@@ -77,7 +75,7 @@ class LocalTxnInterceptor implements MethodInterceptor {
    * {@inheritDoc}
    */
   @Override
-  public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+  public final Object invoke(MethodInvocation methodInvocation) throws Throwable {
 
     if (!transactionCoversThisPersistenceUnit(methodInvocation)) {
       return methodInvocation.proceed();
@@ -133,13 +131,7 @@ class LocalTxnInterceptor implements MethodInterceptor {
    * @param em the entity manager.
    * @return the transaction facade. Never {@code null}.
    */
-  protected TransactionFacade getTransactionFacade(final EntityManager em) {
-    EntityTransaction txn = em.getTransaction();
-    if (txn.isActive()) {
-      return new InnerTransaction(txn);
-    }
-    return new OuterTransaction(txn);
-  }
+  protected abstract TransactionFacade getTransactionFacade(final EntityManager em);
 
   /**
    * Invoke the original method surrounded by a transaction.
@@ -228,91 +220,6 @@ class LocalTxnInterceptor implements MethodInterceptor {
       }
     }
     return false;
-  }
-
-
-  // ---- Inner Classes
-
-  /**
-   * TransactionFacade representing an inner (nested) transaction.
-   * Starting and committing a transaction has no effect.
-   * This Facade will set the rollbackOnly flag in case of a roll back.
-   */
-  private static class InnerTransaction implements TransactionFacade {
-    private final EntityTransaction txn;
-
-    InnerTransaction(EntityTransaction txn) {
-      this.txn = txn;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void begin() {
-      // Do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void commit() {
-      // Do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void rollback() {
-      txn.setRollbackOnly();
-    }
-  }
-
-  /**
-   * TransactionFacade representing an outer transaction.
-   * This Facade starts and ends the transaction.
-   * If an inner transaction has set the rollbackOnly flag the transaction will be rolled back
-   * in any case.
-   */
-  private static class OuterTransaction implements TransactionFacade {
-    private final EntityTransaction txn;
-
-    /**
-     * {@inheritDoc}
-     */
-    OuterTransaction(EntityTransaction txn) {
-      this.txn = txn;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void begin() {
-      txn.begin();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void commit() {
-      if (txn.getRollbackOnly()) {
-        txn.rollback();
-      } else {
-        txn.commit();
-      }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void rollback() {
-      txn.rollback();
-    }
   }
 
   /** Helper class for obtaining the default of @Transactional. */
