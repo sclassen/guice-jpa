@@ -11,7 +11,7 @@
 
   <groupId>com.github.sclassen</groupId>
   <artifactId>guice-jpa</artifactId>
-  <version>0.0.4</version>
+  <version>0.0.5-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Google Guice - Unofficial Extensions - JPA</name>
@@ -30,7 +30,7 @@
     <url>git@github.com:sclassen/guice-jpa.git</url>
     <connection>scm:git:git@github.com:sclassen/guice-jpa.git</connection>
     <developerConnection>scm:git:git@github.com:sclassen/guice-jpa.git</developerConnection>
-    <tag>guice-jpa-0.0.4</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
