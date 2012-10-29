@@ -34,8 +34,8 @@ import com.google.inject.Key;
  * started. If a rollback happens for a method which did not start the transaction the already
  * existing transaction will be marked as rollbackOnly.
  * <p/>
- * Guice uses AOP to enhance a method annotated with @Transactional with a wrapper.
- * This means the @Transactional only works as expected when:
+ * Guice uses AOP to enhance a method annotated with @{@link Transactional} with a wrapper.
+ * This means the @{@link Transactional} only works as expected when:
  * <ul>
  *    <li>
  *        The object on which the method is called has been created by guice. This can be either
@@ -53,13 +53,13 @@ import com.google.inject.Key;
 public @interface Transactional {
 
   /**
-   * A List of annotations for application managed persistence units on which to start a
-   * transaction. Default is on all persistence units.
+   * A List of annotations for persistence units on which to start a transaction.
+   * Default is on all persistence units.
    */
-  Class<? extends Annotation>[] onUnit() default {};
+  Class<? extends Annotation>[] onUnits() default {};
 
   /**
-   * A list of exceptions to rollback on. Default is {@link RuntimeException}
+   * A list of exceptions to rollback on. Default is {@link RuntimeException}.
    */
   Class<? extends Exception>[] rollbackOn() default RuntimeException.class;
 

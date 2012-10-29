@@ -38,16 +38,16 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
 
   // ---- Members
 
-  /** The provder for {@link EntityManager}. */
+  /** The provider for {@link EntityManager}. */
   private final EntityManagerProviderImpl emProvider;
 
   /** The annotation for this persistence unit. May be {@code null}. */
   private Class<? extends Annotation> annotation;
 
-  /** The method interceptor for transactional annotations. */
+  /** The method interceptor for transactional methods. */
   private MethodInterceptor transactionInterceptor;
 
-  /** This defines if the PU uses local or global Transaction. */
+  /** This defines if the PU uses resource local or jta transactions. */
   private TransactionType transactionType = TransactionType.RESOURCE_LOCAL;
 
 
@@ -56,7 +56,7 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   /**
    * Constructor.
    *
-   * @param emProvider the provider for {@link EntityManager}. Must not be null.
+   * @param emProvider the provider for {@link EntityManager}. Must not be {@code null}.
    */
   AbstractPersistenceUnitModule(EntityManagerProviderImpl emProvider) {
     checkNotNull(emProvider);
@@ -68,21 +68,28 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   // ---- Methods
 
   /**
-   * @return the persistence service for the current persistence unit.
+   * @return the persistence service for the persistence unit.
    */
   abstract PersistenceService getPersistenceService();
 
   /**
-   * @return the type of transaction used for this persistence unit.
+   * @return the unit of work for the persistence unit.
+   */
+  final UnitOfWork getUnitOfWork() {
+    return emProvider;
+  }
+
+  /**
+   * @return the type of transaction used for the persistence unit.
    */
   final TransactionType getTransactionType() {
     return transactionType;
   }
 
   /**
-   * Sets the type of transaction to use for this persistence unit.
+   * Sets the type of transaction to use for the persistence unit.
    *
-   * @param transactionType
+   * @param transactionType the type of transaction.
    */
   final void setTransactionType(TransactionType transactionType) {
     this.transactionType = transactionType;
@@ -102,39 +109,32 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   }
 
   /**
-   * Returns the apropriate interceptor depending on the value of {@link #transactionType}.
+   * Returns the appropriate interceptor depending on the value of {@link #transactionType}.
    *
    * @param emProvider the provider for {@link EntityManager}. Must not be {@code null}.
    * @param utFacade the {@link UserTransactionFacade}. May be {@code null}.
-   * @return the interceptor for intercepting transactional methods.
+   * @return the interceptor for intercepting transactional methods. Never {@code null}.
    */
-  final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
+  private final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
       UserTransactionFacade utFacade) {
     if (TransactionType.RESOURCE_LOCAL == transactionType) {
       return new ResourceLocalTxnInterceptor(emProvider, getAnnotation());
     }
     if (TransactionType.JTA == transactionType) {
       checkNotNull(utFacade, "the JNDI name of the user transaction must be specified if a "
-          + "persistence wants to use global transactions");
+          + "persistence unit wants to use jta transactions");
       return new JtaTxnInterceptor(emProvider, getAnnotation(), utFacade);
     }
 
-    throw new IllegalStateException();
+    throw new IllegalStateException("invalid transaction type: " + transactionType);
   }
 
   /**
-   * @return the unit of work for the this persistence unit.
-   */
-  UnitOfWork getUnitOfWork() {
-    return emProvider;
-  }
-
-  /**
-   * Binds the given type annotated with the annotation of this persistence unit and exposes
-   * it on the same time.
+   * Binds the given type annotated with the annotation of this persistence unit and
+   * exposes it at the same time.
    *
-   * @param type the type to bind.
-   * @return the bindingBuilder to define what to bind to the given type.
+   * @param type the type to bind and expose.
+   * @return the bindingBuilder to define what to bind the given type to.
    */
   protected final <T> LinkedBindingBuilder<T> bindAndExpose(TypeLiteral<T> type) {
     if (null != annotation) {
@@ -148,10 +148,10 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
 
   /**
    * Binds the given type annotated with the annotation of this persistence unit and exposes
-   * it on the same time.
+   * it at the same time.
    *
-   * @param type the type to bind.
-   * @return the bindingBuilder to define what to bind to the given type.
+   * @param type the type to bind and expose.
+   * @return the bindingBuilder to define what to bind the given type to.
    */
   protected final <T> LinkedBindingBuilder<T> bindAndExpose(Class<T> type) {
     if (null != annotation) {
@@ -199,7 +199,7 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
 
   /**
    * Setter for the annotation of the current persistence unit. The annotation is used to expose
-   * the {@link UnitOfWork} and the {@link EntityManagerProvider}.
+   * the {@link UnitOfWork}, the {@link EntityManagerProvider} and the {@link PersistenceService}.
    *
    * @param annotation the annotation to use for binding the current persistence unit.
    */

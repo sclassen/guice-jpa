@@ -17,7 +17,9 @@
 package com.github.sclassen.guicejpa;
 
 /**
- * Persistence provider service.
+ * This is the main control to the entire persistence engine. Before calling any other method
+ * of either {@link UnitOfWork}, {@link EntityManagerProvider}, or any method annotated with
+ * @{@link Transactional} the persistence service must be started.
  *
  * @author Stephan Classen
  */
@@ -26,11 +28,10 @@ public interface PersistenceService {
   /**
    * Starts the underlying persistence engine and makes jpa-persist ready for use.
    * This method must be called by your code prior to using any other jpa-persist artifacts.
-   * <ul>
-   *  <li>If already started, calling this method does nothing.</li>
-   * </ul>
+   * 
+   * @throws IllegalArgumentException if the service is already running.
    */
-  void start();
+  void start() throws IllegalArgumentException;
 
   /**
    * @return {@code true} if the underlying persistence engine is running.

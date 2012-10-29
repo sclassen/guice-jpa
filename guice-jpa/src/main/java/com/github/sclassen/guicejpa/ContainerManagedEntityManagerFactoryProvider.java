@@ -26,7 +26,8 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Stephan Classen
  */
-final class ContainerManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider {
+final class ContainerManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider,
+    PersistenceService {
 
   // ---- Members
 
@@ -68,14 +69,15 @@ final class ContainerManagedEntityManagerFactoryProvider implements EntityManage
    */
   @Override
   public void start() {
-    if (!isRunning()) {
-      try {
-        final InitialContext ctx = new InitialContext();
-        emf = (EntityManagerFactory) ctx.lookup(emfJndiName);
-      } catch (NamingException e) {
-        throw new RuntimeException("lookup for EntityManagerFactory with JNDI name '" + emfJndiName
-            + "' failed", e);
-      }
+    if (isRunning()) {
+      throw new IllegalStateException("PersistenceService is already running.");
+    }
+    try {
+      final InitialContext ctx = new InitialContext();
+      emf = (EntityManagerFactory) ctx.lookup(emfJndiName);
+    } catch (NamingException e) {
+      throw new RuntimeException("lookup for EntityManagerFactory with JNDI name '" + emfJndiName
+          + "' failed", e);
     }
   }
 

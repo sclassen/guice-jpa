@@ -42,7 +42,7 @@ class ResourceLocalTxnInterceptor extends AbstractTxnInterceptor {
    */
   public ResourceLocalTxnInterceptor(EntityManagerProviderImpl emProvider,
       Class<? extends Annotation> puAnntoation) {
-    super(emProvider, puAnntoation);
+    super(emProvider, emProvider, puAnntoation);
     checkNotNull(emProvider);
   }
 

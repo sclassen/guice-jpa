@@ -63,23 +63,23 @@ public class PersistenceFilter implements Filter {
    * {@inheritDoc}
    */
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
-    persistenceUnitsContainer.start();
-
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
+    try {
+      persistenceUnitsContainer.begin();
+      chain.doFilter(request, response);
+    } finally {
+      persistenceUnitsContainer.end();
+    }
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-      throws IOException, ServletException {
-    persistenceUnitsContainer.begin();
-    try {
-      chain.doFilter(request, response);
-    } finally {
-      persistenceUnitsContainer.end();
-    }
+  public void init(FilterConfig filterConfig) throws ServletException {
+    persistenceUnitsContainer.start();
+
   }
 
   /**

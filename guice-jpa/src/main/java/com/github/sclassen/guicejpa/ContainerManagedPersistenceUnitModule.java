@@ -23,7 +23,7 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * Persistence module for an application managed persistence unit.
+ * Persistence module for an container managed persistence unit.
  * <p/>
  * Use the {@link PersistenceUnitBuilder} to configure an instance of this class.
  * <p/>

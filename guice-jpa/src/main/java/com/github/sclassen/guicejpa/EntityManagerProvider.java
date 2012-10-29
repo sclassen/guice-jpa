@@ -28,7 +28,7 @@ import com.google.inject.Provider;
  * <p/>
  * The {@link UnitOfWork} defines the life cycle of the {@link EntityManager}. An entity manager
  * will be created when the unit of work is started. It is open and valid for use during the entire
- * unit of work. When the unit of work is closed the entity manager is closed and can no longer
+ * unit of work. When the unit of work ends the entity manager is closed and can no longer
  * be used.
  * <p/>
  * It is a good practice to store this provider in a instance/member variable and only obtain an

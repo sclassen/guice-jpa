@@ -23,15 +23,16 @@ import javax.persistence.Persistence;
 
 /**
  * Implementation of {@link PersistenceService} and {@link EntityManagerFactoryProvider} for
- * application managed entity manager factories.
+ * application managed persistence units.
  *
  * @author Stephan Classen
  */
-final class ApplicationManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider {
+final class ApplicationManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider,
+    PersistenceService {
 
   // ---- Members
 
-  /** Name of the persistence unit as defined in the persistence.xml.  */
+  /** Name of the persistence unit as defined in the persistence.xml. */
   private final String puName;
 
   /** Additional properties. Theses override the ones defined in the persistence.xml. */
@@ -74,9 +75,10 @@ final class ApplicationManagedEntityManagerFactoryProvider implements EntityMana
    */
   @Override
   public void start() {
-    if (!isRunning()) {
-      emf = Persistence.createEntityManagerFactory(puName, properties);
+    if (isRunning()) {
+      throw new IllegalStateException("PersistenceService is already running.");
     }
+    emf = Persistence.createEntityManagerFactory(puName, properties);
   }
 
   /**

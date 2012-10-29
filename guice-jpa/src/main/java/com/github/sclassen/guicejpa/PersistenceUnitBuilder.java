@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.lang.annotation.Annotation;
 
 /**
- * Builder class for configurating an container managed persistence unit.
+ * Builder class for configurating a guice-jpa persistence unit.
  *
  * @author Stephan Classen
  */

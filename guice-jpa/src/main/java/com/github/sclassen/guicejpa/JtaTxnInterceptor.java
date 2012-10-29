@@ -49,7 +49,7 @@ class JtaTxnInterceptor extends AbstractTxnInterceptor {
    */
   public JtaTxnInterceptor(EntityManagerProviderImpl emProvider,
       Class<? extends Annotation> puAnntoation, UserTransactionFacade utFacade) {
-    super(emProvider, puAnntoation);
+    super(emProvider, emProvider, puAnntoation);
     checkNotNull(utFacade);
     this.utFacade = utFacade;
   }
@@ -58,9 +58,10 @@ class JtaTxnInterceptor extends AbstractTxnInterceptor {
   // ---- Methods
 
   /**
-   * Abstract class which hides away the details of inner (nested) and outer transactions.
+   * {@inheritDoc}
    */
-  public TransactionFacade getTransactionFacade(EntityManager em) {
+  @Override
+  protected TransactionFacade getTransactionFacade(EntityManager em) {
     if (Status.STATUS_NO_TRANSACTION == utFacade.getStatus()) {
       return new OuterTransaction(utFacade, em);
     }

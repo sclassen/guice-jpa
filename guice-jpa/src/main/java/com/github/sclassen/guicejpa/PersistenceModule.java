@@ -50,8 +50,8 @@ import com.google.inject.matcher.Matchers;
  *    <li>{@link #addContainerManagedPersistenceUnit(String, Properties)}</li>
  * </ul>
  * <p/>
- * If container managed persistence units have been added and container managed transactions (CMT)
- * are supported. Use {@link #setUserTransactionJndiName(String)} to define the JNDI name of the
+ * If container managed persistence units have been added and JTA transactions are supported.
+ * Use {@link #setUserTransactionJndiName(String)} to define the JNDI name of the
  * {@link UserTransaction} provided by the container.
  *
  * @author Stephan Classen
@@ -86,7 +86,7 @@ public final class PersistenceModule extends AbstractModule {
   // ---- Methods
 
   /**
-   * Add an application managed persistence unit.
+   * Adds an application managed persistence unit.
    *
    * @param puName the name of the persistence unit as specified in the persistence.xml.
    * @return a builder to further configure the persistence unit.
@@ -96,7 +96,7 @@ public final class PersistenceModule extends AbstractModule {
   }
 
   /**
-   * Add an application managed persistence unit.
+   * Adds an application managed persistence unit.
    *
    * @param puName the name of the persistence unit as specified in the persistence.xml.
    * @param properties the properties to pass to the {@link EntityManagerFactory}.
@@ -108,7 +108,7 @@ public final class PersistenceModule extends AbstractModule {
   }
 
   /**
-   * Add an application managed persistence unit.
+   * Adds an application managed persistence unit.
    *
    * @param module the module of the persistence unit.
    * @return a builder to further configure the persistence unit.
@@ -122,7 +122,7 @@ public final class PersistenceModule extends AbstractModule {
   }
 
   /**
-   * Add an container managed persistence unit.
+   * Adds an container managed persistence unit.
    *
    * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}.
    * @return a builder to further configure the persistence unit.
@@ -132,7 +132,7 @@ public final class PersistenceModule extends AbstractModule {
   }
 
   /**
-   * Add an container managed persistence unit.
+   * Adds an container managed persistence unit.
    *
    * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}.
    * @param properties the properties to pass to the {@link EntityManager}.
@@ -144,7 +144,7 @@ public final class PersistenceModule extends AbstractModule {
   }
 
   /**
-   * Add an container managed persistence unit.
+   * Adds an container managed persistence unit.
    *
    * @param module the module of the persistence unit.
    * @return a builder to further configure the persistence unit.
@@ -173,6 +173,10 @@ public final class PersistenceModule extends AbstractModule {
   @Override
   protected void configure() {
     if (configureHasNotBeenExecutedYet()) {
+      if (0 == moduleBuilders.size()) {
+        addError("no persistence units defined. At least one persistence unit is required.");
+        return;
+      }
       initUserTransactionFacade();
       for (PersistenceUnitBuilder builder : moduleBuilders) {
         final AbstractPersistenceUnitModule module = builder.build();
@@ -224,8 +228,7 @@ public final class PersistenceModule extends AbstractModule {
         UserTransaction txn = (UserTransaction) ctx.lookup(utJndiName);
         utFacade = new UserTransactionFacade(txn);
       } catch (NamingException e) {
-        throw new RuntimeException("lookup for UserTransaction with JNDI name '" + utJndiName
-            + "' failed", e);
+        addError("lookup for UserTransaction with JNDI name '%s' failed", utJndiName);
       }
     }
   }

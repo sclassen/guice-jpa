@@ -42,7 +42,7 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
   private final UnitOfWork unitOfWork;
 
   /** Provider for {@link EntityManager}. */
-  private final EntityManagerProviderImpl emProvider;
+  private final EntityManagerProvider emProvider;
 
   /** Annotation of the persistence unit this interceptor belongs to. */
   private final Class<? extends Annotation> puAnntoation;
@@ -56,14 +56,17 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
   /**
    * Constructor.
    *
-   * @param emProvider the provider for {@link EntityManager}.
-   * @param puAnntoation the annotation of the persistence unit this interceptor belongs to.
+   * @param emProvider the provider for {@link EntityManager}. Must not be {@code null}.
+   * @param unitOfWork the unit of work. Must not be {@code null}.
+   * @param puAnntoation the annotation of the persistence unit the interceptor belongs to.
+   *        May be {@code null}.
    */
-  public AbstractTxnInterceptor(EntityManagerProviderImpl emProvider,
+  public AbstractTxnInterceptor(EntityManagerProvider emProvider, UnitOfWork unitOfWork,
       Class<? extends Annotation> puAnntoation) {
+    checkNotNull(unitOfWork);
     checkNotNull(emProvider);
 
-    this.unitOfWork = emProvider;
+    this.unitOfWork = unitOfWork;
     this.emProvider = emProvider;
     this.puAnntoation = puAnntoation;
   }
@@ -111,7 +114,7 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
     }
 
     final Transactional localTransaction = readTransactionMetadata(methodInvocation);
-    final Class<? extends Annotation>[] units = localTransaction.onUnit();
+    final Class<? extends Annotation>[] units = localTransaction.onUnits();
     if (null == units || 0 == units.length) {
       return true;
     }
@@ -137,7 +140,7 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
    * Invoke the original method surrounded by a transaction.
    *
    * @param methodInvocation the original method invocation.
-   * @param transactionFacade the Facade to the transaction.
+   * @param transactionFacade the facade to the underling resource local or jta transaction.
    * @return the result of the invocation of the original method.
    * @throws Throwable if an exception occurs during the call to the original method.
    */
@@ -153,9 +156,10 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
 
   /**
    * Invoke the original method assuming a transaction has already been started.
+   * This method is responsible of calling rollback if necessary.
    *
    * @param methodInvocation the original method invocation.
-   * @param transactionFacade the Facade to the transaction.
+   * @param transactionFacade the facade to the underlying resource local or jta transaction.
    * @return the result of the invocation of the original method.
    * @throws Throwable if an exception occurs during the call to the original method.
    */
@@ -176,10 +180,10 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
   }
 
   /**
-   * Reads the @Transactional of a given method invocation.
+   * Reads the @{@link Transactional} of a given method invocation.
    *
-   * @param methodInvocation the method invocation for which to obtain the @Transactional.
-   * @return the @Transactional of the given method invocation. Never {@code null}.
+   * @param methodInvocation the method invocation for which to obtain the @{@link Transactional}.
+   * @return the @{@link Transactional} of the given method invocation. Never {@code null}.
    */
   private Transactional readTransactionMetadata(MethodInvocation methodInvocation) {
     final Method method = methodInvocation.getMethod();
@@ -204,8 +208,8 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
   /**
    * Returns True if a rollback is necessary.
    *
-   * @param transactional The metadata annotation of the method
-   * @param e The exception to test for rollback
+   * @param transactional The metadata annotation of the method.
+   * @param e The exception to test for rollback.
    * @return {@code true} if a rollback is necessary, {@code false} otherwise.
    */
   private boolean rollbackIsNecessary(Transactional transactional, Throwable e) {
@@ -222,7 +226,7 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
     return false;
   }
 
-  /** Helper class for obtaining the default of @Transactional. */
+  /** Helper class for obtaining the default of @{@link Transactional}. */
   @Transactional
   private static class DefaultTransactional {
   }

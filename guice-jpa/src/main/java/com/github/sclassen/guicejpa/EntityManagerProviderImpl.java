@@ -70,8 +70,9 @@ final class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWo
    */
   @Override
   public EntityManager get() {
-    if (isActive()) {
-      return entityManagers.get();
+    EntityManager entityManager = entityManagers.get();
+    if (null != entityManager) {
+      return entityManager;
     }
 
     throw new IllegalStateException("UnitOfWork is not running.");

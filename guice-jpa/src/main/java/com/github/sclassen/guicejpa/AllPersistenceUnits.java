@@ -28,7 +28,7 @@ import com.google.inject.BindingAnnotation;
  * Annotation for {@link PersistenceService} and {@link UnitOfWork}. This is a special annotation
  * for retrieving a container holding all registered persistence units. Calling a method on one
  * of these container will trigger the method call on all registered instances. In other words
- * on all perisistence untis.
+ * on all persistence units.
  *
  * @author Stephan Classen
  */
