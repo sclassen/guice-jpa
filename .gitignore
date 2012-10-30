@@ -3,6 +3,7 @@
 .classpath
 .settings
 .metadata
+.checkstyle
 
 # output folder
 target
