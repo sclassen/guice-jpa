@@ -94,7 +94,8 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
       final TransactionFacade transactionFacade = getTransactionFacade(em);
 
       return invoke(methodInvocation, transactionFacade);
-    } finally {
+    }
+    finally {
       if (weStartedTheUnitOfWork) {
         unitOfWork.end();
       }
@@ -119,7 +120,8 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
       return true;
     }
 
-    for (int i = 0, n = units.length; i < n; i++) {
+    final int n = units.length;
+    for (int i = 0; i < n; i++) {
       if (puAnntoation.equals(units[i])) {
         return true;
       }
@@ -145,7 +147,7 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
    * @throws Throwable if an exception occurs during the call to the original method.
    */
   private Object invoke(MethodInvocation methodInvocation, TransactionFacade transactionFacade)
-      throws Throwable {
+    throws Throwable {
 
     transactionFacade.begin();
     final Object result = doTransactional(methodInvocation, transactionFacade);
@@ -164,14 +166,16 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
    * @throws Throwable if an exception occurs during the call to the original method.
    */
   private Object doTransactional(MethodInvocation methodInvocation,
-      TransactionFacade transactionFacade) throws Throwable {
+    TransactionFacade transactionFacade) throws Throwable {
     try {
       return methodInvocation.proceed();
-    } catch (Throwable e) {
-      Transactional t = readTransactionMetadata(methodInvocation);
+    }
+    catch (Throwable e) {
+      final Transactional t = readTransactionMetadata(methodInvocation);
       if (rollbackIsNecessary(t, e)) {
         transactionFacade.rollback();
-      } else {
+      }
+      else {
         transactionFacade.commit();
       }
       // In any case: throw the original exception.

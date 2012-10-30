@@ -52,6 +52,7 @@ public final class PersistenceUnitBuilder {
    * the {@link EntityManagerProvider} in guice.
    *
    * @param annotation the annotation. May be {@code null}.
+   * @return the builder for method chaining.
    */
   public PersistenceUnitBuilder annotatedWith(Class<? extends Annotation> annotation) {
     checkNotNull(module, "cannot change a module after creating the injector.");

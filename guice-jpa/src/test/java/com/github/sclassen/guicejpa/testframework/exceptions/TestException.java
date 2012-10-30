@@ -29,10 +29,18 @@ public class TestException extends Exception {
 
   private final String message;
 
+  /**
+   * Constructor.
+   */
   public TestException() {
     message = TestException.class.getSimpleName();
   }
 
+  /**
+   * Constructor.
+   * 
+   * @param message the message of the exception.
+   */
   public TestException(String message) {
     this.message = message;
   }

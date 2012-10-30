@@ -115,7 +115,7 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
    * @param utFacade the {@link UserTransactionFacade}. May be {@code null}.
    * @return the interceptor for intercepting transactional methods. Never {@code null}.
    */
-  private final MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
+  private MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
       UserTransactionFacade utFacade) {
     if (TransactionType.RESOURCE_LOCAL == transactionType) {
       return new ResourceLocalTxnInterceptor(emProvider, getAnnotation());
@@ -140,7 +140,8 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
     if (null != annotation) {
       expose(type).annotatedWith(annotation);
       return bind(type).annotatedWith(annotation);
-    } else {
+    }
+    else {
       expose(type);
       return bind(type);
     }
@@ -157,7 +158,8 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
     if (null != annotation) {
       expose(type).annotatedWith(annotation);
       return bind(type).annotatedWith(annotation);
-    } else {
+    }
+    else {
       expose(type);
       return bind(type);
     }
@@ -176,7 +178,8 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
       expose(UnitOfWork.class);
       expose(EntityManagerProvider.class);
       expose(PersistenceService.class);
-    } else {
+    }
+    else {
       bind(UnitOfWork.class).annotatedWith(annotation).toInstance(emProvider);
       bind(EntityManagerProvider.class).annotatedWith(annotation).toInstance(emProvider);
       bind(PersistenceService.class).annotatedWith(annotation).toInstance(getPersistenceService());

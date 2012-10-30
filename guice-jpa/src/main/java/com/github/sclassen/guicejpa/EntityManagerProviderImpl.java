@@ -70,7 +70,7 @@ final class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWo
    */
   @Override
   public EntityManager get() {
-    EntityManager entityManager = entityManagers.get();
+    final EntityManager entityManager = entityManagers.get();
     if (null != entityManager) {
       return entityManager;
     }
@@ -91,7 +91,8 @@ final class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWo
     final EntityManager em;
     if (null == properties) {
       em = emf.createEntityManager();
-    } else {
+    }
+    else {
       em = emf.createEntityManager(properties);
     }
 

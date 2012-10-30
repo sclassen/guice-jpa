@@ -31,7 +31,7 @@ interface TransactionFacade {
    * The first call to begin will start the actual transaction. Subsequent calls will start a
    * 'nested' transaction.
    */
-  public abstract void begin();
+  void begin();
 
   /**
    * Commits a transaction.
@@ -39,7 +39,7 @@ interface TransactionFacade {
    * Only the actual transaction can be committed. Calls to commit on nested transactions has no
    * effect.
    */
-  public abstract void commit();
+  void commit();
 
   /**
    * Rolls a transaction back.
@@ -48,6 +48,6 @@ interface TransactionFacade {
    * set the onlyRollBack flag on the actual transaction. Setting this flag wil cause an actual
    * transaction to be rolled back in any case.
    */
-  public abstract void rollback();
+  void rollback();
 
 }

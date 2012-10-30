@@ -54,7 +54,7 @@ class ResourceLocalTxnInterceptor extends AbstractTxnInterceptor {
    */
   @Override
   protected TransactionFacade getTransactionFacade(final EntityManager em) {
-    EntityTransaction txn = em.getTransaction();
+    final EntityTransaction txn = em.getTransaction();
     if (txn.isActive()) {
       return new InnerTransaction(txn);
     }
@@ -132,7 +132,8 @@ class ResourceLocalTxnInterceptor extends AbstractTxnInterceptor {
     public void commit() {
       if (txn.getRollbackOnly()) {
         txn.rollback();
-      } else {
+      }
+      else {
         txn.commit();
       }
     }

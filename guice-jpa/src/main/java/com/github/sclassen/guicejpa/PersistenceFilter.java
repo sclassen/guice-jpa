@@ -64,11 +64,12 @@ public class PersistenceFilter implements Filter {
    */
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-      throws IOException, ServletException {
+    throws IOException, ServletException {
     try {
       persistenceUnitsContainer.begin();
       chain.doFilter(request, response);
-    } finally {
+    }
+    finally {
       persistenceUnitsContainer.end();
     }
   }

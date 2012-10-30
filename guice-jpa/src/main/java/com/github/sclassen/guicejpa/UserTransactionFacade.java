@@ -56,10 +56,12 @@ class UserTransactionFacade {
   void begin() {
     try {
       txn.begin();
-    } catch (NotSupportedException e) {
+    }
+    catch (NotSupportedException e) {
       throw new RuntimeException("nested transactions are not supported by the user transaction "
           + txn, e);
-    } catch (SystemException e) {
+    }
+    catch (SystemException e) {
       throw new RuntimeException("unexpected error occured", e);
     }
   }
@@ -70,17 +72,23 @@ class UserTransactionFacade {
   void commit() {
     try {
       txn.commit();
-    } catch (SecurityException e) {
+    }
+    catch (SecurityException e) {
       throw new RuntimeException("not allowed to commit the transaction", e);
-    } catch (IllegalStateException e) {
+    }
+    catch (IllegalStateException e) {
       throw new RuntimeException("no transaction associated with userTransaction", e);
-    } catch (RollbackException e) {
+    }
+    catch (RollbackException e) {
       throw new RuntimeException("rollback during commit", e);
-    } catch (HeuristicMixedException e) {
+    }
+    catch (HeuristicMixedException e) {
       throw new RuntimeException("heuristic partial rollback during commit", e);
-    } catch (HeuristicRollbackException e) {
+    }
+    catch (HeuristicRollbackException e) {
       throw new RuntimeException("heuristic rollback during commit", e);
-    } catch (SystemException e) {
+    }
+    catch (SystemException e) {
       throw new RuntimeException("unexpected error occured", e);
     }
   }
@@ -91,11 +99,14 @@ class UserTransactionFacade {
   void rollback() {
     try {
       txn.rollback();
-    } catch (IllegalStateException e) {
+    }
+    catch (IllegalStateException e) {
       throw new RuntimeException("no transaction associated with userTransaction", e);
-    } catch (SecurityException e) {
+    }
+    catch (SecurityException e) {
       throw new RuntimeException("not allowed to rollback the transaction", e);
-    } catch (SystemException e) {
+    }
+    catch (SystemException e) {
       throw new RuntimeException("unexpected error occured", e);
     }
   }
@@ -106,9 +117,11 @@ class UserTransactionFacade {
   void setRollbackOnly() {
     try {
       txn.setRollbackOnly();
-    } catch (IllegalStateException e) {
+    }
+    catch (IllegalStateException e) {
       throw new RuntimeException("no transaction associated with userTransaction", e);
-    } catch (SystemException e) {
+    }
+    catch (SystemException e) {
       throw new RuntimeException("unexpected error occured", e);
     }
   }
@@ -122,13 +135,15 @@ class UserTransactionFacade {
       for (int i = 0; Status.STATUS_UNKNOWN == status && i < 5; i++) {
         try {
           Thread.sleep(10L);
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
           // do nothing
         }
         status = txn.getStatus();
       }
       return status;
-    } catch (SystemException e) {
+    }
+    catch (SystemException e) {
       throw new RuntimeException("unexpected error occured", e);
     }
   }
@@ -139,7 +154,8 @@ class UserTransactionFacade {
   void setTransactionTimeout(int seconds) {
     try {
       txn.setTransactionTimeout(seconds);
-    } catch (SystemException e) {
+    }
+    catch (SystemException e) {
       throw new RuntimeException("unexpected error occured", e);
     }
   }

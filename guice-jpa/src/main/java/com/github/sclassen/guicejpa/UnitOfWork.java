@@ -63,7 +63,7 @@ public interface UnitOfWork {
    *
    * @throws IllegalStateException if the unit of work is already running for this thread.
    */
-  void begin();
+  void begin() throws IllegalStateException;
 
   /**
    * @return {@code true} if the unit of work is already running for this thread

@@ -64,7 +64,7 @@ public class TransactionalWorker {
    */
   public void scheduleTask(Class<? extends TransactionalTask> taskType) {
     checkTransactionalAnnotation(taskType);
-    TransactionalTask task = injector.getInstance(taskType);
+    final TransactionalTask task = injector.getInstance(taskType);
     task.setWorker(this);
     tasks.add(task);
   }
@@ -73,8 +73,8 @@ public class TransactionalWorker {
     try {
       final Method method = taskType.getMethod(DO_TRANSACTIONAL);
       final Transactional annotation = method.getAnnotation(Transactional.class);
-      checkNotNull(annotation,
-          "@Transactional annotation missing on %s.%s", taskType.getSimpleName(), DO_TRANSACTIONAL);
+      checkNotNull(annotation, "@Transactional annotation missing on %s.%s",
+          taskType.getSimpleName(), DO_TRANSACTIONAL);
     }
     catch (NoSuchMethodException e) {
       // should never occure.
@@ -85,8 +85,6 @@ public class TransactionalWorker {
   /**
    * Executes the previously specified tasks. All entities which were stored using
    * {@link TransactionalTask#storeEntity(TransactionTestEntity)} are collected by the worker.<p/>
-   *
-   * @return a list with the 'stored' entities
    */
   public void doTasks() {
     checkState(tasks.hasTasks(), "no tasks have been added to the worker.");
@@ -113,7 +111,7 @@ public class TransactionalWorker {
   @Transactional
   public void assertAllEntitesHaveBeenPersisted() {
     checkState(!storedEntities.isEmpty(), "no entities to check");
-    for(TransactionTestEntity storedEntity:storedEntities) {
+    for (TransactionTestEntity storedEntity : storedEntities) {
       assertNotNull("At least one entity which should have been peristed was NOT found in the DB. "
           + tasks, emProvider.get().find(TransactionTestEntity.class, storedEntity.getId()));
     }
@@ -125,7 +123,7 @@ public class TransactionalWorker {
   @Transactional
   public void assertNoEntityHasBeenPersisted() {
     checkState(!storedEntities.isEmpty(), "no entities to check");
-    for(TransactionTestEntity storedEntity:storedEntities) {
+    for (TransactionTestEntity storedEntity : storedEntities) {
       assertNull("At least one entity which should NOT have been peristed was found in the DB. "
           + tasks, emProvider.get().find(TransactionTestEntity.class, storedEntity.getId()));
     }
@@ -133,8 +131,8 @@ public class TransactionalWorker {
 
   @VisibleForTesting
   void doNextTask() throws TestException {
-    if(tasks.hasNext()) {
-      TransactionalTask task = tasks.next();
+    if (tasks.hasNext()) {
+      final TransactionalTask task = tasks.next();
       try {
         task.doTransactional();
       }
@@ -159,7 +157,7 @@ public class TransactionalWorker {
      * @return {@code true} if there have already been tasks added.
      */
     public boolean hasTasks() {
-      return ! tasks.isEmpty();
+      return !tasks.isEmpty();
     }
 
     /**
@@ -185,7 +183,7 @@ public class TransactionalWorker {
      * @throws IndexOutOfBoundsException if there are no more tasks.
      */
     public TransactionalTask next() {
-      TransactionalTask result = tasks.get(pos);
+      final TransactionalTask result = tasks.get(pos);
       pos++;
       return result;
     }
@@ -194,7 +192,7 @@ public class TransactionalWorker {
     public String toString() {
       final StringBuilder sb = new StringBuilder("Tasks[");
       String separator = "";
-      for (TransactionalTask t: tasks) {
+      for (TransactionalTask t : tasks) {
         sb.append(separator);
         final String taskType = t.getClass().getSimpleName();
         sb.append(taskType.replaceAll("\\$\\$EnhancerByGuice\\$\\$.*", ""));

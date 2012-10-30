@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This configuration file was written by the eclipse-cs plugin configuration 
+  editor -->
+<!-- Checkstyle-Configuration: guice-jpa Description: none -->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+  <property name="severity" value="warning" />
+  <module name="TreeWalker">
+    <module name="FileContentsHolder" />
+    <module name="MemberName" />
+    <module name="StaticVariableName" />
+    <module name="ConstantName">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="constant name should only contain upper case characters and underscores" />
+    </module>
+    <module name="ModifierOrder">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Check for correct order of modifiers" />
+    </module>
+    <module name="RedundantModifier">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Check for redundant modifiers" />
+    </module>
+    <module name="CovariantEquals" />
+    <module name="EqualsHashCode" />
+    <module name="SuperClone" />
+    <module name="TypeName" />
+    <module name="MethodName" />
+    <module name="ArrayTypeStyle" />
+    <module name="EmptyBlock">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="At least a comment in an empty catch, if or else block" />
+      <property name="option" value="text" />
+      <property name="tokens" value="LITERAL_CATCH,LITERAL_ELSE,LITERAL_IF" />
+    </module>
+    <module name="EmptyBlock">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="No empty blocks" />
+      <property name="tokens"
+        value="LITERAL_DO,LITERAL_FINALLY,LITERAL_FOR,LITERAL_TRY,LITERAL_WHILE,STATIC_INIT" />
+    </module>
+    <module name="NeedBraces">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Braces around code blocks required" />
+    </module>
+    <module name="JavadocMethod">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Javadoc for public and protected methods required" />
+      <property name="scope" value="protected" />
+      <property name="allowMissingPropertyJavadoc" value="true" />
+    </module>
+    <module name="JavadocStyle">
+      <property name="scope" value="protected" />
+      <property name="checkHtml" value="false" />
+    </module>
+    <module name="JavadocType">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Javadoc for public and protected types required" />
+      <property name="scope" value="protected" />
+    </module>
+    <module name="JavadocVariable">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Javadoc for public and protected variables required" />
+      <property name="scope" value="protected" />
+    </module>
+<!--     <module name="DoubleCheckedLocking"> -->
+<!--       <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" -->
+<!--         value="Do not use double-checked locking" /> -->
+<!--     </module> -->
+    <module name="EmptyStatement" />
+    <module name="HiddenField">
+      <property name="severity" value="ignore" />
+      <property name="ignoreConstructorParameter" value="true" />
+      <property name="ignoreSetter" value="true" />
+    </module>
+    <module name="MultipleStringLiterals">
+      <property name="severity" value="ignore" />
+    </module>
+    <module name="StringLiteralEquality" />
+    <module name="HideUtilityClassConstructor" />
+    <module name="AvoidStarImport" />
+    <module name="UnusedImports">
+      <property name="severity" value="ignore" />
+    </module>
+    <module name="SuperFinalize" />
+    <module name="DescendantToken">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Condition in for performs no check" />
+      <property name="tokens" value="FOR_CONDITION" />
+      <property name="limitedTokens" value="EXPR" />
+      <property name="minimumNumber" value="1" />
+      <property name="minimumMessage" value="Condition in for performs no check" />
+    </module>
+    <module name="DefaultComesLast" />
+    <module name="FallThrough" />
+    <module name="IllegalInstantiation">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Do not create new Boolean instances" />
+      <property name="classes" value="java.lang.Boolean" />
+    </module>
+    <module name="InnerAssignment" />
+    <module name="JUnitTestCase" />
+    <module name="MissingSwitchDefault" />
+    <module name="MultipleVariableDeclarations" />
+    <module name="PackageDeclaration" />
+    <module name="SimplifyBooleanExpression" />
+    <module name="SimplifyBooleanReturn" />
+    <module name="FinalClass" />
+    <module name="InterfaceIsType" />
+    <module name="MutableException" />
+    <module name="VisibilityModifier">
+      <property name="packageAllowed" value="true" />
+    </module>
+    <module name="IllegalImport" />
+    <module name="RedundantImport" />
+    <module name="LocalFinalVariableName" />
+    <module name="LocalVariableName" />
+    <module name="PackageName" />
+    <module name="ParameterName" />
+    <module name="RightCurly">
+      <property name="option" value="alone" />
+    </module>
+    <module name="LeftCurly">
+      <property name="maxLineLength" value="200" />
+    </module>
+    <module name="LineLength">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="Maximum line length 160" />
+      <property name="max" value="160" />
+    </module>
+    <module name="MethodParamPad">
+      <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+        value="No whitespaces after declaration or call" />
+    </module>
+    <module name="ParenPad" />
+    <module name="TypecastParenPad">
+      <property name="tokens" value="RPAREN,TYPECAST" />
+    </module>
+    <module name="WhitespaceAfter" />
+    <module name="WhitespaceAround">
+      <property name="tokens"
+        value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,EQUAL,GE,GT,LAND,LE,LITERAL_ASSERT,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,QUESTION,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,LITERAL_ASSERT" />
+    </module>
+    <module name="NestedIfDepth">
+      <property name="max" value="3" />
+    </module>
+    <module name="Indentation">
+      <property name="basicOffset" value="2"/>
+    </module>
+    <module name="UpperEll" />
+    <module name="MethodParamPad" />
+    <module name="FinalLocalVariable" />
+  </module>
+  <module name="NewlineAtEndOfFile">
+    <property name="lineSeparator" value="lf" />
+    <property name="fileExtensions" value="java" />
+  </module>
+  <module name="SuppressionFilter">
+    <metadata name="com.atlassw.tools.eclipse.checkstyle.comment"
+      value="Filters out certain checkstyle validations for special files" />
+    <property name="file" value="${config_loc}/suppressions.xml" />
+  </module>
+  <module name="SuppressionCommentFilter">
+    <property name="offCommentFormat" value="CS\: STOP JAVADOC CHECK" />
+    <property name="onCommentFormat" value="CS\: RESUME JAVADOC CHECK" />
+    <property name="checkFormat" value="JavadocMethod" />
+  </module>
+  <module name="SuppressionCommentFilter">
+    <property name="offCommentFormat" value="CS\: STOP" />
+    <property name="onCommentFormat" value="CS\: RESUME" />
+  </module>
+  <module name="FileTabCharacter">
+    <property name="eachLine" value="true" />
+  </module>
+</module>

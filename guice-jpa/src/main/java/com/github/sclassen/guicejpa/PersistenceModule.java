@@ -225,9 +225,10 @@ public final class PersistenceModule extends AbstractModule {
     if (null != utJndiName) {
       try {
         final InitialContext ctx = new InitialContext();
-        UserTransaction txn = (UserTransaction) ctx.lookup(utJndiName);
+        final UserTransaction txn = (UserTransaction) ctx.lookup(utJndiName);
         utFacade = new UserTransactionFacade(txn);
-      } catch (NamingException e) {
+      }
+      catch (NamingException e) {
         addError("lookup for UserTransaction with JNDI name '%s' failed", utJndiName);
       }
     }

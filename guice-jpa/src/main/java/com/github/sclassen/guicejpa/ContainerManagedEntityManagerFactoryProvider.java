@@ -75,7 +75,8 @@ final class ContainerManagedEntityManagerFactoryProvider implements EntityManage
     try {
       final InitialContext ctx = new InitialContext();
       emf = (EntityManagerFactory) ctx.lookup(emfJndiName);
-    } catch (NamingException e) {
+    }
+    catch (NamingException e) {
       throw new RuntimeException("lookup for EntityManagerFactory with JNDI name '" + emfJndiName
           + "' failed", e);
     }

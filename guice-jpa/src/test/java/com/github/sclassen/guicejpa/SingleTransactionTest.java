@@ -17,8 +17,7 @@
 package com.github.sclassen.guicejpa;
 
 import junit.framework.TestCase;
-import com.github.sclassen.guicejpa.PersistenceModule;
-import com.github.sclassen.guicejpa.PersistenceService;
+
 import com.github.sclassen.guicejpa.testframework.TransactionalWorker;
 import com.github.sclassen.guicejpa.testframework.tasks.TaskRollingBackOnAnyThrowingNone;
 import com.github.sclassen.guicejpa.testframework.tasks.TaskRollingBackOnAnyThrowingRuntimeTestException;
@@ -32,7 +31,6 @@ import com.github.sclassen.guicejpa.testframework.tasks.TaskRollingBackOnRuntime
 import com.github.sclassen.guicejpa.testframework.tasks.TaskRollingBackOnTestExceptionThrowingNone;
 import com.github.sclassen.guicejpa.testframework.tasks.TaskRollingBackOnTestExceptionThrowingRuntimeTestException;
 import com.github.sclassen.guicejpa.testframework.tasks.TaskRollingBackOnTestExceptionThrowingTestException;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -65,7 +63,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnAnyThrowingNone() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnAnyThrowingNone.class);
 
     // when
@@ -77,7 +75,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnAnyThrowingRuntimeTestException() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnAnyThrowingRuntimeTestException.class);
 
     // when
@@ -89,7 +87,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnAnyThrowingTestException() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnAnyThrowingTestException.class);
 
     // when
@@ -101,7 +99,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnNoneThrowingNone() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnNoneThrowingNone.class);
 
     // when
@@ -113,7 +111,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnNoneThrowingRuntimeTestException() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnNoneThrowingRuntimeTestException.class);
 
     // when
@@ -125,7 +123,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnNoneThrowingTestException() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnNoneThrowingTestException.class);
 
     // when
@@ -137,7 +135,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnRuntimeTestExceptionThrowingNone() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnRuntimeTestExceptionThrowingNone.class);
 
     // when
@@ -149,7 +147,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnRuntimeTestExceptionThrowingRuntimeTestException() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnRuntimeTestExceptionThrowingRuntimeTestException.class);
 
     // when
@@ -161,7 +159,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnRuntimeTestExceptionThrowingTestException() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnRuntimeTestExceptionThrowingTestException.class);
 
     // when
@@ -173,7 +171,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnTestExceptionThrowingNone() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnTestExceptionThrowingNone.class);
 
     // when
@@ -185,7 +183,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnTestExceptionThrowingRuntimeTestException() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnTestExceptionThrowingRuntimeTestException.class);
 
     // when
@@ -197,7 +195,7 @@ public class SingleTransactionTest extends TestCase {
 
   public void testTaskRollingBackOnTestExceptionThrowingTestException() {
     // given
-    TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
+    final TransactionalWorker worker = injector.getInstance(TransactionalWorker.class);
     worker.scheduleTask(TaskRollingBackOnTestExceptionThrowingTestException.class);
 
     // when

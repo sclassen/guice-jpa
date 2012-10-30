@@ -45,6 +45,6 @@ public interface EntityManagerProvider {
    * @return the {@link EntityManager}.
    * @throws IllegalStateException if {@link UnitOfWork#isActive()} returns false.
    */
-  EntityManager get();
+  EntityManager get() throws IllegalStateException;
 
 }

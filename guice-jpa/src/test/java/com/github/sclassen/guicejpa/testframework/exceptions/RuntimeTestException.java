@@ -29,12 +29,20 @@ public class RuntimeTestException extends RuntimeException {
 
   private final String message;
 
+  /**
+   * Constructor.
+   */
   public RuntimeTestException() {
     this.message = RuntimeTestException.class.getSimpleName();
   }
 
+  /**
+   * Constructor.
+   * 
+   * @param message the message of the exception.
+   */
   public RuntimeTestException(String message) {
-	  this.message = message;
+    this.message = message;
   }
 
   @Override

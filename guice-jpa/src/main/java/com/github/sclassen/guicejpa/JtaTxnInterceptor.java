@@ -140,7 +140,8 @@ class JtaTxnInterceptor extends AbstractTxnInterceptor {
     public void commit() {
       if (Status.STATUS_ACTIVE == txn.getStatus()) {
         txn.commit();
-      } else {
+      }
+      else {
         txn.rollback();
       }
     }
