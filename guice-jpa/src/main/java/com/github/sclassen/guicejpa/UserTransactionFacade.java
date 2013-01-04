@@ -43,7 +43,7 @@ class UserTransactionFacade {
   /**
    * Constructor.
    *
-   * @param txn the actual user transaction to facade.
+   * @param txn the actual user transaction to facade. Must not be {@code null}.
    */
   UserTransactionFacade(UserTransaction txn) {
     checkNotNull(txn);

@@ -37,7 +37,7 @@ class ResourceLocalTxnInterceptor extends AbstractTxnInterceptor {
   /**
    * Constructor.
    *
-   * @param emProvider the provider for {@link EntityManager}.
+   * @param emProvider the provider for {@link EntityManager}. Must not be {@code null}.
    * @param puAnntoation the annotation of the persistence unit this interceptor belongs to.
    */
   public ResourceLocalTxnInterceptor(EntityManagerProviderImpl emProvider,

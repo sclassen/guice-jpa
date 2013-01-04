@@ -62,7 +62,7 @@ public final class PersistenceUnitBuilder {
 
   /**
    * Configure the persistence unit to use local transactions. This means even if the data source
-   * is managed by the container its transaction won't participate in a global container managed
+   * is managed by the container its transaction will not participate in a global container managed
    * transaction (CMT).
    */
   public void useResourceLocalTransaction() {

@@ -36,8 +36,8 @@ import javax.servlet.ServletResponse;
  * <pre>
  *  public class MyModule extends ServletModule {
  *    public void configure() {
- *      // bind your persitence units here
- *      
+ *      // bind your persistence units here
+ *
  *      filter("/*").through(PersistenceFilter.class);
  *    }
  *  }
@@ -83,7 +83,6 @@ public class PersistenceFilter implements Filter {
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
     persistenceUnitsContainer.start();
-
   }
 
   /**

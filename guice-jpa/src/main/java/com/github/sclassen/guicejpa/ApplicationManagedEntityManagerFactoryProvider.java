@@ -49,8 +49,8 @@ final class ApplicationManagedEntityManagerFactoryProvider implements EntityMana
   /**
    * Constructor.
    *
-   * @param puName the name of the persistence unit as defined in the persistence.xml.
-   * @param properties the additional properties. Theses override the ones defined in the persistence.xml.
+   * @param puName the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
+   * @param properties the additional properties. Theses override the ones defined in the persistence.xml. Must not be {@code null}.
    */
   public ApplicationManagedEntityManagerFactoryProvider(String puName, Properties properties) {
     checkNotNull(puName);

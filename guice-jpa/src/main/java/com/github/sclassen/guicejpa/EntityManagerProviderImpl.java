@@ -56,7 +56,7 @@ final class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWo
   /**
    * Constructor.
    *
-   * @param emfProvider the provider for {@link EntityManagerFactory}.
+   * @param emfProvider the provider for {@link EntityManagerFactory}. Must not be {@code null}.
    * @param properties additional properties to be set on every {@link EntityManager} which is created.
    */
   public EntityManagerProviderImpl(EntityManagerFactoryProvider emfProvider, Properties properties) {

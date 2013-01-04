@@ -132,7 +132,7 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
 
   /**
    * Returns the transaction facade for the given entity manager.
-   * 
+   *
    * @param em the entity manager.
    * @return the transaction facade. Never {@code null}.
    */

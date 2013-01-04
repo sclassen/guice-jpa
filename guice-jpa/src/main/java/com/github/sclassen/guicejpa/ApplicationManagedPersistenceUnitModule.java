@@ -27,10 +27,11 @@ import javax.persistence.EntityManagerFactory;
  * <p/>
  * Use the {@link PersistenceUnitBuilder} to configure an instance of this class.
  * <p/>
- * This is a private module which will expose the following bindings:
+ * This is a guice private module which will expose the following bindings:
  * <ul>
  *    <li>{@link UnitOfWork}</li>
  *    <li>{@link EntityManagerProvider}</li>
+ *    <li>{@link PersistenceService}</li>
  * </ul>
  * If an annotation has been defined for this module the above classes are exposed with this
  * annotation. Within the private module the above classes are also binded without any annotation.
@@ -54,7 +55,7 @@ public class ApplicationManagedPersistenceUnitModule extends AbstractPersistence
   /**
    * Constructor.
    *
-   * @param puName the name of the persistence unit as defined in the persistence.xml.
+   * @param puName the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
    */
   public ApplicationManagedPersistenceUnitModule(String puName) {
     this(puName, new Properties());
@@ -63,8 +64,8 @@ public class ApplicationManagedPersistenceUnitModule extends AbstractPersistence
   /**
    * Constructor.
    *
-   * @param puName the name of the persistence unit as defined in the persistence.xml.
-   * @param properties the additional properties. Theses override the ones defined in the persistence.xml.
+   * @param puName the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
+   * @param properties the additional properties. Theses override the ones defined in the persistence.xml. Must not be {@code null}.
    */
   public ApplicationManagedPersistenceUnitModule(String puName, Properties properties) {
     this(new ApplicationManagedEntityManagerFactoryProvider(puName, properties));

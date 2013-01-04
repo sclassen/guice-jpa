@@ -89,7 +89,7 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   /**
    * Sets the type of transaction to use for the persistence unit.
    *
-   * @param transactionType the type of transaction.
+   * @param transactionType the type of transaction. Must not be {@code null}.
    */
   final void setTransactionType(TransactionType transactionType) {
     checkNotNull(transactionType);
@@ -204,6 +204,8 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   /**
    * Setter for the annotation of the current persistence unit. The annotation is used to expose
    * the {@link UnitOfWork}, the {@link EntityManagerProvider} and the {@link PersistenceService}.
+   * If the passed in annotation is {@code null} the above classes will be exposed without an annotation.
+   * This does not work if more than one persistence unit is configured.
    *
    * @param annotation the annotation to use for binding the current persistence unit.
    */

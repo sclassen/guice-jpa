@@ -31,6 +31,7 @@ import javax.persistence.EntityManagerFactory;
  * <ul>
  *    <li>{@link UnitOfWork}</li>
  *    <li>{@link EntityManagerProvider}</li>
+ *    <li>{@link PersistenceService}</li>
  * </ul>
  * If an annotation has been defined for this module the above classes are exposed with this
  * annotation. Within the private module the above classes are also binded without any annotation.
@@ -63,8 +64,8 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
   /**
    * Constructor.
    *
-   * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}.
-   * @param properties the additional properties. Theses override the ones defined in the persistence.xml.
+   * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}. Must not be {@code null}.
+   * @param properties the additional properties. Theses override the ones defined in the persistence.xml. Must not be {@code null}.
    */
   public ContainerManagedPersistenceUnitModule(String emfJndiName, Properties properties) {
     this(new ContainerManagedEntityManagerFactoryProvider(emfJndiName), properties);

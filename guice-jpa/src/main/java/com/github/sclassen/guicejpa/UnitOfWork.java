@@ -21,7 +21,8 @@ import javax.persistence.EntityManager;
 /**
  * The Unit of work correlates with the life cycle of the {@link EntityManager}.
  * According to JPA every thread should use its own {@link EntityManager}. Therefore the unit of
- * work will control the life cycle of the {@link EntityManager} on a per thread basis.
+ * work will control the life cycle of the {@link EntityManager} on a per thread basis. This means
+ * the UnitOfWork is thread safe.
  * <p/>
  * Most of the time it is not recommended to manual control the unit of work.
  * <p/>
@@ -73,7 +74,7 @@ public interface UnitOfWork {
 
   /**
    * Stops the unit of work.
-   * When not unit of work is active this method will do nothing.
+   * When the unit of work is not active this method will do nothing.
    */
   void end();
 

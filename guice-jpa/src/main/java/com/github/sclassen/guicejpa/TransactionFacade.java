@@ -36,8 +36,8 @@ interface TransactionFacade {
   /**
    * Commits a transaction.
    * <p/>
-   * Only the actual transaction can be committed. Calls to commit on nested transactions has no
-   * effect.
+   * Only the actual transaction can be committed. Calls to commit on nested transactions have
+   * no effect.
    */
   void commit();
 

@@ -25,22 +25,23 @@ import java.lang.annotation.Target;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Provider;
 
 /**
  * Marks a method or class to be executed within a transaction.
  * <p/>
- * This will span a new transaction around the method unless there is already a
- * running transaction. In the case that there is a running transaction no new transaction is
- * started. If a rollback happens for a method which did not start the transaction the already
- * existing transaction will be marked as rollbackOnly.
+ * This will span a new transaction around the method unless there is already a running transaction.
+ * In the case that there is a running transaction no new transaction is started.
+ * If a rollback happens for a method which did not start the transaction the already existing
+ * transaction will be marked as rollbackOnly.
  * <p/>
  * Guice uses AOP to enhance a method annotated with @{@link Transactional} with a wrapper.
  * This means the @{@link Transactional} only works as expected when:
  * <ul>
  *    <li>
- *        The object on which the method is called has been created by guice. This can be either
- *        done by having it injected into your class or by calling
- *        {@link Injector#getInstance(Class)} or {@link Injector#getInstance(Key)}.
+ *        The object on which the method is called has been created by guice.
+ *        This can be achieved by having it (or a {@link Provider}) injected into your class
+ *        or by calling {@link Injector#getInstance(Class)} or {@link Injector#getInstance(Key)}.
  *    </li>
  *    <li>
  *        The method which should be run transactional is not private and not final

@@ -45,7 +45,7 @@ final class ContainerManagedEntityManagerFactoryProvider implements EntityManage
   /**
    * Constructor.
    *
-   * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}.
+   * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}. Must not be {@code null}.
    */
   public ContainerManagedEntityManagerFactoryProvider(String emfJndiName) {
     checkNotNull(emfJndiName);

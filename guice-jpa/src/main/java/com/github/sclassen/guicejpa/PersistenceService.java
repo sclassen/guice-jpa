@@ -28,7 +28,9 @@ public interface PersistenceService {
   /**
    * Starts the underlying persistence engine and makes jpa-persist ready for use.
    * This method must be called by your code prior to using any other jpa-persist artifacts.
-   * 
+   * If you are using jpa-persist in a web container {@link PersistenceFilter} will call this
+   * method upon initialization of the web application.
+   *
    * @throws IllegalArgumentException if the service is already running.
    */
   void start() throws IllegalArgumentException;

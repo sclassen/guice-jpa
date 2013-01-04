@@ -25,7 +25,7 @@ import java.util.Set;
  * Container of persistence units. This is a convenience wrapper for multiple
  * persistence units. calling any method of either {@link PersistenceService} or
  * {@link UnitOfWork} will propagate this call to all added persistence units.
- * 
+ *
  * @author Stephan Classen
  */
 class PersistenceUnitContainer implements PersistenceService, UnitOfWork {
@@ -42,10 +42,10 @@ class PersistenceUnitContainer implements PersistenceService, UnitOfWork {
   // ---- Methods
 
   /**
-   * Adds a persistence service to this container.
-   * 
-   * @param ps the persistence service to add.
-   * @param uow the unit of work to add.
+   * Adds a persistence service and a unit of work to this container.
+   *
+   * @param ps the persistence service to add. Must not be {@code null}.
+   * @param uow the unit of work to add. Must not be {@code null}.
    */
   void add(PersistenceService ps, UnitOfWork uow) {
     checkNotNull(ps);
