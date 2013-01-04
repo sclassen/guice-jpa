@@ -116,8 +116,8 @@ final class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWo
    */
   @Override
   public void end() {
-    if (isActive()) {
-      final EntityManager em = entityManagers.get();
+    final EntityManager em = entityManagers.get();
+    if (null != em) {
       em.close();
       entityManagers.remove();
     }
