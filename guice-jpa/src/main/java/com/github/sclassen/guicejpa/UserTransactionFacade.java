@@ -137,7 +137,7 @@ class UserTransactionFacade {
       int status = txn.getStatus();
       for (int i = 0; Status.STATUS_UNKNOWN == status && i < 5; i++) {
         try {
-          Thread.sleep(10L);
+          Thread.sleep(30L);
         }
         catch (InterruptedException e) {
           // do nothing
