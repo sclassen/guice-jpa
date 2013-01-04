@@ -99,12 +99,13 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   /**
    * The method interceptor for intercepting transactional methods.
    *
-   * @param utFacade the {@link UserTransactionFacade}. May be {@code null}.
+   * @param utFacade the {@link UserTransactionFacade}.
+   *        May be {@code null} if {@link #transactionType} is {@link TransactionType#RESOURCE_LOCAL}.
    * @return the interceptor for intercepting transactional methods.
    */
   final MethodInterceptor getTransactionInterceptor(UserTransactionFacade utFacade) {
     if (null == transactionInterceptor) {
-      transactionInterceptor = getTxnInterceptor(emProvider, utFacade);
+      transactionInterceptor = getTxnInterceptor(utFacade);
     }
     return transactionInterceptor;
   }
@@ -112,18 +113,17 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
   /**
    * Returns the appropriate interceptor depending on the value of {@link #transactionType}.
    *
-   * @param emProvider the provider for {@link EntityManager}. Must not be {@code null}.
-   * @param utFacade the {@link UserTransactionFacade}. May be {@code null}.
+   * @param utFacade the {@link UserTransactionFacade}.
+   *        May be {@code null} if {@link #transactionType} is {@link TransactionType#RESOURCE_LOCAL}.
    * @return the interceptor for intercepting transactional methods. Never {@code null}.
    */
-  private MethodInterceptor getTxnInterceptor(EntityManagerProviderImpl emProvider,
-      UserTransactionFacade utFacade) {
+  private MethodInterceptor getTxnInterceptor(UserTransactionFacade utFacade) {
     if (TransactionType.RESOURCE_LOCAL == transactionType) {
       return new ResourceLocalTxnInterceptor(emProvider, getAnnotation());
     }
     if (TransactionType.JTA == transactionType) {
       checkNotNull(utFacade, "the JNDI name of the user transaction must be specified if a "
-          + "persistence unit wants to use jta transactions");
+          + "persistence unit wants to use JTA transactions");
       return new JtaTxnInterceptor(emProvider, getAnnotation(), utFacade);
     }
 
