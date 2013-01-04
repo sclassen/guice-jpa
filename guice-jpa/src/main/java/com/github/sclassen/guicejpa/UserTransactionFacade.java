@@ -16,6 +16,8 @@
  */
 package com.github.sclassen.guicejpa;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -44,6 +46,7 @@ class UserTransactionFacade {
    * @param txn the actual user transaction to facade.
    */
   UserTransactionFacade(UserTransaction txn) {
+    checkNotNull(txn);
     this.txn = txn;
   }
 

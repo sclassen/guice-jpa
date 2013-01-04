@@ -16,6 +16,8 @@
  */
 package com.github.sclassen.guicejpa;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
@@ -46,6 +48,7 @@ final class ContainerManagedEntityManagerFactoryProvider implements EntityManage
    * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}.
    */
   public ContainerManagedEntityManagerFactoryProvider(String emfJndiName) {
+    checkNotNull(emfJndiName);
     this.emfJndiName = emfJndiName;
   }
 

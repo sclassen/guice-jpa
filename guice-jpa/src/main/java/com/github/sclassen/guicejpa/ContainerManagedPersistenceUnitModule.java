@@ -69,6 +69,7 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
   public ContainerManagedPersistenceUnitModule(String emfJndiName, Properties properties) {
     this(new ContainerManagedEntityManagerFactoryProvider(emfJndiName), properties);
     checkNotNull(emfJndiName);
+    checkNotNull(properties);
   }
 
   /**
@@ -80,7 +81,6 @@ public class ContainerManagedPersistenceUnitModule extends AbstractPersistenceUn
   private ContainerManagedPersistenceUnitModule(
       ContainerManagedEntityManagerFactoryProvider emfProvider, Properties properties) {
     super(new EntityManagerProviderImpl(emfProvider, properties));
-    checkNotNull(properties);
     this.emfProvider = emfProvider;
   }
 

@@ -92,6 +92,7 @@ public final class PersistenceModule extends AbstractModule {
    * @return a builder to further configure the persistence unit.
    */
   public PersistenceUnitBuilder addApplicationManagedPersistenceUnit(String puName) {
+    checkNotNull(puName);
     return add(new ApplicationManagedPersistenceUnitModule(puName));
   }
 
@@ -104,6 +105,8 @@ public final class PersistenceModule extends AbstractModule {
    */
   public PersistenceUnitBuilder addApplicationManagedPersistenceUnit(String puName,
       Properties properties) {
+    checkNotNull(puName);
+    checkNotNull(properties);
     return add(new ApplicationManagedPersistenceUnitModule(puName, properties));
   }
 
@@ -128,6 +131,7 @@ public final class PersistenceModule extends AbstractModule {
    * @return a builder to further configure the persistence unit.
    */
   public PersistenceUnitBuilder addContainerManagedPersistenceUnit(String emfJndiName) {
+    checkNotNull(emfJndiName);
     return add(new ContainerManagedPersistenceUnitModule(emfJndiName));
   }
 
@@ -140,6 +144,8 @@ public final class PersistenceModule extends AbstractModule {
    */
   public PersistenceUnitBuilder addContainerManagedPersistenceUnit(String emfJndiName,
       Properties properties) {
+    checkNotNull(emfJndiName);
+    checkNotNull(properties);
     return add(new ContainerManagedPersistenceUnitModule(emfJndiName, properties));
   }
 

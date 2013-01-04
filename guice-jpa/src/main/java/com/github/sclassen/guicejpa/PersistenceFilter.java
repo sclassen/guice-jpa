@@ -16,6 +16,8 @@
  */
 package com.github.sclassen.guicejpa;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -53,6 +55,7 @@ public class PersistenceFilter implements Filter {
   // ---- Constructor
 
   PersistenceFilter(PersistenceUnitContainer persistenceUnitsContainer) {
+    checkNotNull(persistenceUnitsContainer);
     this.persistenceUnitsContainer = persistenceUnitsContainer;
   }
 

@@ -16,6 +16,8 @@
  */
 package com.github.sclassen.guicejpa;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
@@ -58,6 +60,8 @@ final class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWo
    * @param properties additional properties to be set on every {@link EntityManager} which is created.
    */
   public EntityManagerProviderImpl(EntityManagerFactoryProvider emfProvider, Properties properties) {
+    checkNotNull(emfProvider);
+
     this.emfProvider = emfProvider;
     this.properties = properties;
   }

@@ -16,6 +16,8 @@
  */
 package com.github.sclassen.guicejpa;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -51,6 +53,9 @@ final class ApplicationManagedEntityManagerFactoryProvider implements EntityMana
    * @param properties the additional properties. Theses override the ones defined in the persistence.xml.
    */
   public ApplicationManagedEntityManagerFactoryProvider(String puName, Properties properties) {
+    checkNotNull(puName);
+    checkNotNull(properties);
+
     this.puName = puName;
     this.properties = properties;
   }

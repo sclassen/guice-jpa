@@ -92,6 +92,7 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
    * @param transactionType the type of transaction.
    */
   final void setTransactionType(TransactionType transactionType) {
+    checkNotNull(transactionType);
     this.transactionType = transactionType;
   }
 

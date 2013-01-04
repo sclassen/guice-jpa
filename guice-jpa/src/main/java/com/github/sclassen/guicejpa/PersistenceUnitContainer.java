@@ -16,6 +16,8 @@
  */
 package com.github.sclassen.guicejpa;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,6 +48,8 @@ class PersistenceUnitContainer implements PersistenceService, UnitOfWork {
    * @param uow the unit of work to add.
    */
   void add(PersistenceService ps, UnitOfWork uow) {
+    checkNotNull(ps);
+    checkNotNull(uow);
     persistenceServices.add(ps);
     unitsOfWork.add(uow);
   }
