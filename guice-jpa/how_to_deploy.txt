@@ -1,0 +1,20 @@
+
+Sources:
+ - http://maven.apache.org/guides/mini/guide-central-repository-upload.html
+ - https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
+
+
+
+Steps:
+> mvn clean test
+> mvn mvn release:clean
+> mvn release:prepare
+> mvn release:perform
+
+Goto: https://oss.sonatype.org/
+> login
+> staging repositories
+> select comgithubsclassen repository
+> click "close"
+> select comgithubsclassen repository
+> click "release"
