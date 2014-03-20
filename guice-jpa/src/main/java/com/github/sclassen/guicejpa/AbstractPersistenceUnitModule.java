@@ -103,9 +103,9 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
    *        May be {@code null} if {@link #transactionType} is {@link TransactionType#RESOURCE_LOCAL}.
    * @return the interceptor for intercepting transactional methods.
    */
-  final MethodInterceptor getTransactionInterceptor(UserTransactionFacade utFacade) {
+  final MethodInterceptor getTransactionInterceptor(UserTransactionFacade utFacade, PersistenceExceptionTranslator<?> peTranslator) {
     if (null == transactionInterceptor) {
-      transactionInterceptor = getTxnInterceptor(utFacade);
+      transactionInterceptor = getTxnInterceptor(utFacade, peTranslator);
     }
     return transactionInterceptor;
   }
@@ -117,14 +117,14 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
    *        May be {@code null} if {@link #transactionType} is {@link TransactionType#RESOURCE_LOCAL}.
    * @return the interceptor for intercepting transactional methods. Never {@code null}.
    */
-  private MethodInterceptor getTxnInterceptor(UserTransactionFacade utFacade) {
+  private MethodInterceptor getTxnInterceptor(UserTransactionFacade utFacade, PersistenceExceptionTranslator<?> peTranslator) {
     if (TransactionType.RESOURCE_LOCAL == transactionType) {
-      return new ResourceLocalTxnInterceptor(emProvider, getAnnotation());
+      return new ResourceLocalTxnInterceptor(emProvider, getAnnotation(), peTranslator);
     }
     if (TransactionType.JTA == transactionType) {
       checkNotNull(utFacade, "the JNDI name of the user transaction must be specified if a "
           + "persistence unit wants to use JTA transactions");
-      return new JtaTxnInterceptor(emProvider, getAnnotation(), utFacade);
+      return new JtaTxnInterceptor(emProvider, getAnnotation(), utFacade, peTranslator);
     }
 
     throw new IllegalStateException("invalid transaction type: " + transactionType);

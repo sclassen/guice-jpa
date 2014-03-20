@@ -41,8 +41,8 @@ class ResourceLocalTxnInterceptor extends AbstractTxnInterceptor {
    * @param puAnntoation the annotation of the persistence unit this interceptor belongs to.
    */
   public ResourceLocalTxnInterceptor(EntityManagerProviderImpl emProvider,
-      Class<? extends Annotation> puAnntoation) {
-    super(emProvider, emProvider, puAnntoation);
+      Class<? extends Annotation> puAnntoation, PersistenceExceptionTranslator<?> peTranslator) {
+    super(emProvider, emProvider, puAnntoation, peTranslator);
     checkNotNull(emProvider);
   }
 

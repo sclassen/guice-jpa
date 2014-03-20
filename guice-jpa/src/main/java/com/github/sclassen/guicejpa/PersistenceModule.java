@@ -81,6 +81,8 @@ public final class PersistenceModule extends AbstractModule {
    * The {@link UserTransactionFacade}.
    */
   private UserTransactionFacade utFacade = null;
+  
+  private PersistenceExceptionTranslator<?> peTranslator = null;
 
 
   // ---- Methods
@@ -172,6 +174,11 @@ public final class PersistenceModule extends AbstractModule {
     ensureConfigurHasNotYetBeenExecuted();
     this.utJndiName = utJndiName;
   }
+  
+  public void setPersistenceExceptionTranslator(PersistenceExceptionTranslator<?> peTranslator) {
+    ensureConfigurHasNotYetBeenExecuted();
+    this.peTranslator = peTranslator;
+  }
 
   /**
    * {@inheritDoc}
@@ -195,7 +202,7 @@ public final class PersistenceModule extends AbstractModule {
       install(module);
 
       final Matcher<AnnotatedElement> matcher = Matchers.annotatedWith(Transactional.class);
-      final MethodInterceptor transactionInterceptor = module.getTransactionInterceptor(utFacade);
+      final MethodInterceptor transactionInterceptor = module.getTransactionInterceptor(utFacade, peTranslator);
 
       bindInterceptor(matcher, any(), transactionInterceptor);
       bindInterceptor(any(), matcher, transactionInterceptor);

@@ -49,6 +49,8 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
 
   /** cache for {@link Transactional} annotations per method. */
   private final Map<Method, Transactional> transactionalCache = new MapMaker().weakKeys().makeMap();
+  
+  private final PersistenceExceptionTranslator<?> peTranslator;
 
 
   // ---- Constructor
@@ -62,13 +64,14 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
    *        May be {@code null}.
    */
   public AbstractTxnInterceptor(EntityManagerProvider emProvider, UnitOfWork unitOfWork,
-      Class<? extends Annotation> puAnntoation) {
+      Class<? extends Annotation> puAnntoation, PersistenceExceptionTranslator<?> peTranslator) {
     checkNotNull(unitOfWork);
     checkNotNull(emProvider);
 
     this.unitOfWork = unitOfWork;
     this.emProvider = emProvider;
     this.puAnntoation = puAnntoation;
+    this.peTranslator = peTranslator;
   }
 
 
@@ -94,8 +97,16 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
       final TransactionFacade transactionFacade = getTransactionFacade(em);
 
       return invoke(methodInvocation, transactionFacade);
-    }
-    finally {
+    } catch (RuntimeException e) {
+      if (peTranslator != null) {
+        RuntimeException te = peTranslator.translateExceptionIfPossible(e);
+        if (te != null) {
+          throw te;
+        }
+      }
+      
+      throw e;
+    } finally {
       if (weStartedTheUnitOfWork) {
         unitOfWork.end();
       }

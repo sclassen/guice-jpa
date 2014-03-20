@@ -48,8 +48,9 @@ class JtaTxnInterceptor extends AbstractTxnInterceptor {
    * @param utFacade the {@link UserTransactionFacade}. Must not be {@code null}.
    */
   public JtaTxnInterceptor(EntityManagerProviderImpl emProvider,
-      Class<? extends Annotation> puAnntoation, UserTransactionFacade utFacade) {
-    super(emProvider, emProvider, puAnntoation);
+      Class<? extends Annotation> puAnntoation, UserTransactionFacade utFacade,
+      PersistenceExceptionTranslator<?> peTranslator) {
+    super(emProvider, emProvider, puAnntoation, peTranslator);
     checkNotNull(utFacade);
     this.utFacade = utFacade;
   }
