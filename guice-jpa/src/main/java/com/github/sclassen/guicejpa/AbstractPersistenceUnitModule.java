@@ -101,6 +101,8 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
    *
    * @param utFacade the {@link UserTransactionFacade}.
    *        May be {@code null} if {@link #transactionType} is {@link TransactionType#RESOURCE_LOCAL}.
+   * @param peTranslator the {@link PersistenceExceptionTranslator}.
+   *        May be {@code null} and then exception translation will be not enabled.
    * @return the interceptor for intercepting transactional methods.
    */
   final MethodInterceptor getTransactionInterceptor(UserTransactionFacade utFacade, PersistenceExceptionTranslator<?> peTranslator) {
@@ -115,6 +117,8 @@ abstract class AbstractPersistenceUnitModule extends PrivateModule {
    *
    * @param utFacade the {@link UserTransactionFacade}.
    *        May be {@code null} if {@link #transactionType} is {@link TransactionType#RESOURCE_LOCAL}.
+   * @param peTranslator the {@link PersistenceExceptionTranslator}.
+   *        May be {@code null} and then exception translation will be not enabled.
    * @return the interceptor for intercepting transactional methods. Never {@code null}.
    */
   private MethodInterceptor getTxnInterceptor(UserTransactionFacade utFacade, PersistenceExceptionTranslator<?> peTranslator) {

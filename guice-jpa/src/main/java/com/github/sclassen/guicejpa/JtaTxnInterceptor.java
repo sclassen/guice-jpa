@@ -46,6 +46,7 @@ class JtaTxnInterceptor extends AbstractTxnInterceptor {
    * @param emProvider the provider for {@link EntityManager}. Must not be {@code null}.
    * @param puAnntoation the annotation used for this persistence unit.
    * @param utFacade the {@link UserTransactionFacade}. Must not be {@code null}.
+   * @param peTranslator the {@link PersistenceExceptionTranslator}. Can be {@code null}.
    */
   public JtaTxnInterceptor(EntityManagerProviderImpl emProvider,
       Class<? extends Annotation> puAnntoation, UserTransactionFacade utFacade,

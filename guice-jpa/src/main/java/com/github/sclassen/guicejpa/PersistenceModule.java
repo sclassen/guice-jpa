@@ -82,6 +82,9 @@ public final class PersistenceModule extends AbstractModule {
    */
   private UserTransactionFacade utFacade = null;
   
+  /**
+   * The {@link PersistenceExceptionTranslator}.
+   */
   private PersistenceExceptionTranslator<?> peTranslator = null;
 
 
@@ -175,6 +178,11 @@ public final class PersistenceModule extends AbstractModule {
     this.utJndiName = utJndiName;
   }
   
+  /**
+   * Setter for defining the {@link PersistenceExceptionTranslator}.
+   * 
+   * @param peTranslator the {@link PersistenceExceptionTranslator} implementation
+   */
   public void setPersistenceExceptionTranslator(PersistenceExceptionTranslator<?> peTranslator) {
     ensureConfigurHasNotYetBeenExecuted();
     this.peTranslator = peTranslator;

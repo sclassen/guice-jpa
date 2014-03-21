@@ -50,6 +50,7 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
   /** cache for {@link Transactional} annotations per method. */
   private final Map<Method, Transactional> transactionalCache = new MapMaker().weakKeys().makeMap();
   
+  /** Translator for PersistenceException's. */
   private final PersistenceExceptionTranslator<?> peTranslator;
 
 
@@ -62,6 +63,7 @@ abstract class AbstractTxnInterceptor implements MethodInterceptor {
    * @param unitOfWork the unit of work. Must not be {@code null}.
    * @param puAnntoation the annotation of the persistence unit the interceptor belongs to.
    *        May be {@code null}.
+   * @param peTranslator the {@link PersistenceExceptionTranslator}. Can be {@code null}.
    */
   public AbstractTxnInterceptor(EntityManagerProvider emProvider, UnitOfWork unitOfWork,
       Class<? extends Annotation> puAnntoation, PersistenceExceptionTranslator<?> peTranslator) {
